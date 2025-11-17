@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="acalderonFitPause.Views.vLogReg"
+             BackgroundColor="#2563FF">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24"
+                             Spacing="20"
+                             VerticalOptions="Center">
+
+            <!-- TARJETA PRINCIPAL -->
+            <Border Stroke="Black"
+                    Background="White"
+                    StrokeThickness="1"
+                    Margin="0,20,0,0"
+                    Padding="24"
+                    StrokeShape="RoundRectangle 24">
+
+                <VerticalStackLayout Spacing="20">
+
+                    <Image Source="logo_login.png"
+                               HeightRequest="100"
+                       Aspect="AspectFit" />
+
+                    <!-- Título -->
+                    <Label Text="Bienvenido a FitPause"
+                   TextColor="#374151"
+                   FontSize="24"
+                   HorizontalTextAlignment="Center"
+                   Margin="0,10,0,0"/>
+
+                    <!-- BOTONES TIPO PESTAÑA -->
+                    <Grid ColumnDefinitions="*,*"
+                          ColumnSpacing="10"
+                          Margin="0,0,0,10">
+
+                        <!-- Pestaña LOGIN -->
+                        <Button x:Name="LoginTabButton"
+                                Grid.Column="0"
+                                Text="Iniciar Sesión"
+                                BackgroundColor="#2563FF"
+                                TextColor="White"
+                                CornerRadius="20"
+                                Clicked="BtnFormLogin_Clicked"/>
+
+                        <!-- Pestaña REGISTRO -->
+                        <Button x:Name="RegisterTabButton"
+                                Grid.Column="1"
+                                Text="Registrarse"
+                                BackgroundColor="Transparent"
+                                TextColor="#2563FF"
+                                BorderColor="#2563FF"
+                                BorderWidth="1"
+                                CornerRadius="20"
+                                Clicked="BtnFormRegistro_Clicked"/>
+                    </Grid>
+
+                    <!-- =============== FORMULARIO LOGIN =============== -->
+                    <VerticalStackLayout x:Name="frmLogin"
+                                         Spacing="16"
+                                         IsVisible="True">
+
+                        <!-- Correo -->
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Correo Electrónico"
+                                   TextColor="#374151" />
+                            <Entry x:Name="txtLoginCorreo"
+                                   Placeholder="tu@email.com"
+                                   Keyboard="Email"
+                                   BackgroundColor="#F3F4F6"
+                                   TextColor="#111827" />
+                        </VerticalStackLayout>
+
+                        <!-- Contraseña -->
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Contraseña"
+                                   TextColor="#374151" />
+                            <Entry x:Name="txtLoginPass"
+                                   Placeholder="••••••••"
+                                   IsPassword="True"
+                                   BackgroundColor="#F3F4F6"
+                                   TextColor="#111827" />
+                        </VerticalStackLayout>
+
+                        <!-- Botón Login -->
+                        <Button Text="Iniciar Sesión"
+                                BackgroundColor="#2563FF"
+                                TextColor="White"
+                                CornerRadius="12"
+                                HeightRequest="50"
+                                Clicked="BtnLogin_Clicked"/>
+
+                        <!-- Olvidaste contraseña -->
+                        <Button Text="¿Olvidaste tu contraseña?"
+                                BackgroundColor="Transparent"
+                                TextColor="#2563FF"
+                                FontSize="14"
+                                HorizontalOptions="Center"
+                                Clicked="btnRecuperaPass"/>
+                    </VerticalStackLayout>
+
+
+                    <!-- =============== FORMULARIO REGISTRO =============== -->
+                    <VerticalStackLayout x:Name="frmRegistro"
+                                         Spacing="16"
+                                         IsVisible="False">
+
+                        <!-- Nombre completo -->
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Nombre Completo"
+                                   TextColor="#374151" />
+                            <Entry x:Name="txtRegNombre"
+                                   Placeholder="Tu nombre"
+                                   BackgroundColor="#F3F4F6"
+                                   TextColor="#111827" />
+                        </VerticalStackLayout>
+
+                        <!-- Correo -->
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Correo Electrónico"
+                                   TextColor="#374151" />
+                            <Entry x:Name="txtRegCorreo"
+                                   Placeholder="tu@email.com"
+                                   Keyboard="Email"
+                                   BackgroundColor="#F3F4F6"
+                                   TextColor="#111827" />
+                        </VerticalStackLayout>
+
+                        <!-- Contraseña -->
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Contraseña"
+                                   TextColor="#374151" />
+                            <Entry x:Name="txtRegPass"
+                                   Placeholder="••••••••"
+                                   IsPassword="True"
+                                   BackgroundColor="#F3F4F6"
+                                   TextColor="#111827" />
+                        </VerticalStackLayout>
+
+                        <!-- Pregunta de verificación -->
+                        <VerticalStackLayout Spacing="4">
+                            <Label  TextColor="#374151" />
+                            <Picker x:Name="pkPregunta"
+                                    Title="Selecciona una pregunta"
+                                    BackgroundColor="#F3F4F6"
+                                    TextColor="#111827">
+                                <Picker.ItemsSource>
+                                    <x:Array Type="{x:Type x:String}">
+                                        <x:String>¿Nombre de tu primera mascota?</x:String>
+                                        <x:String>¿Ciudad donde naciste?</x:String>
+                                        <x:String>¿Comida favorita?</x:String>
+                                        <x:String>¿Nombre de tu mejor amigo de infancia?</x:String>
+                                    </x:Array>
+                                </Picker.ItemsSource>
+                            </Picker>
+                        </VerticalStackLayout>
+
+                        <!-- Respuesta de verificación -->
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Respuesta"
+                                   TextColor="#374151" />
+                            <Entry x:Name="txtRespuesta"
+                                   Placeholder="Tu respuesta secreta"
+                                   BackgroundColor="#F3F4F6"
+                                   TextColor="#111827" />
+                        </VerticalStackLayout>
+
+                        <!-- Botón Registro -->
+                        <Button Text="Crear Cuenta"
+                                BackgroundColor="#2563FF"
+                                TextColor="White"
+                                CornerRadius="12"
+                                HeightRequest="50"
+                                Clicked="BtnRegistro_Clicked"/>
+
+                    </VerticalStackLayout>
+
+                </VerticalStackLayout>
+            </Border>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
