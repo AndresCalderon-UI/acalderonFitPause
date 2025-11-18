@@ -2,290 +2,337 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="acalderonFitPause.Views.vPrincipal"
-             Title="vPrincipal">
-    <ScrollView>
-        <VerticalStackLayout Spacing="0">
+             Title="Inicio">
 
-            <!-- Header Section -->
-            <Grid BackgroundColor="#2563FF" 
-                  Padding="20">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
+    <!-- Grid para contenido + menú inferior fijo -->
+    <Grid RowDefinitions="*,Auto" BackgroundColor="#F3F4F6">
 
-                <!-- Greeting -->
-                <VerticalStackLayout Grid.Row="0" Grid.Column="0" Spacing="5">
-                    <Label Text="Hola," 
-                           TextColor="White" 
-                           Opacity="0.9"
-                           FontSize="14"/>
-                    <Label Text="{Binding UserName}" 
-                           TextColor="White" 
-                           FontSize="24"/>
-                </VerticalStackLayout>
+        <!-- CONTENIDO PRINCIPAL -->
+        <ScrollView Grid.Row="0">
+            <VerticalStackLayout Spacing="0">
 
-                <!-- Menu Button -->
-                <ImageButton Grid.Row="0"  
-                             Grid.Column="1"
-                             BackgroundColor="#2563FF"
-                             Source="icono_perfil.png"
-                             VerticalOptions="Start"
-                             Clicked="Perfil_Clicked"/>
-
-                <!-- Activity Card -->
-                <Border Grid.Row="1" 
-                        Grid.ColumnSpan="2"
-                        Background="White"
-                        StrokeThickness="0"
-                        Padding="16"
-                        Margin="0,20,0,0"
-                        StrokeShape="RoundRectangle 16">
-
-                    <Grid ColumnSpacing="15">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-
-                        <!-- Icon -->
-                        <Border Grid.Column="0" 
-                                Background="#EBF5FF"
-                                StrokeThickness="0"
-                                StrokeShape="RoundRectangle 12"
-                                Padding="12">
-                            <Image Source="activity_icon.png" 
-                                   WidthRequest="24"
-                                   HeightRequest="24"/>
-                        </Border>
-
-                        <!-- Info -->
-                        <VerticalStackLayout Grid.Column="1" 
-                                             VerticalOptions="Center"
-                                             Spacing="2">
-                            <Label Text="Tiempo sin movimiento" 
-                                   TextColor="#6B7280"
-                                   FontSize="14"/>
-                            <Label Text="{Binding InactiveTime, StringFormat='{0} min'}" 
-                                   TextColor="#111827"
-                                   FontSize="24"/>
-                        </VerticalStackLayout>
-
-                        <!-- Button -->
-                        <Button Grid.Column="2" 
-                                Text="Ver Detalle"
-                                BackgroundColor="#2563FF"
-                                TextColor="White"
-                                CornerRadius="12"
-                                Padding="15,8"
-                                VerticalOptions="Center"
-                                Command="{Binding NavigateToMonitorCommand}"/>
-                    </Grid>
-                </Border>
-            </Grid>
-
-            <!-- Content Section -->
-            <VerticalStackLayout Padding="20" Spacing="16">
-
-                <!-- Section Title -->
-                <Label Text="Resumen de Hoy" 
-                       TextColor="#111827"
-                       FontSize="20"/>
-
-                <!-- Stats Grid -->
-                <Grid ColumnSpacing="16" RowSpacing="16">
+                <!-- Header Section -->
+                <Grid BackgroundColor="#2563FF" Padding="20">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
-                    <!-- Pausas Card -->
-                    <Border Grid.Column="0" 
-                            Stroke="#E5E7EB"
-                            Background="White"
-                            StrokeThickness="1"
-                            StrokeShape="RoundRectangle 12"
-                            Padding="16">
-                        <VerticalStackLayout Spacing="8">
-                            <HorizontalStackLayout Spacing="8">
-                                <Image Source="pausas_icono.png" 
-                                       WidthRequest="20"
-                                       HeightRequest="20">
-                                    <!--<Image.Behaviors>
-                                        <Behaviors:IconTintColorBehavior TintColor="{StaticResource Primary}" />
-                                    </Image.Behaviors>-->
-                                </Image>
-                                <Label Text="Pausas" 
-                                       TextColor="#374151"
-                                       FontSize="14"/>
-                            </HorizontalStackLayout>
-                            <Label Text="{Binding TodayPauses}" 
-                                   TextColor="#111827"
-                                   FontSize="30"/>
-                            <Label Text="completadas" 
-                                   TextColor="#6B7280"
-                                   FontSize="12"/>
-                        </VerticalStackLayout>
-                    </Border>
-
-                    <!-- Racha Card -->
-                    <Border Grid.Column="1" 
-                            Stroke="#E5E7EB"
-                            Background="White"
-                            StrokeThickness="1"
-                            StrokeShape="RoundRectangle 12"
-                            Padding="16">
-                        <VerticalStackLayout Spacing="8">
-                            <HorizontalStackLayout Spacing="8">
-                                <Image Source="racha_icono.png" 
-                                       WidthRequest="20"
-                                       HeightRequest="20">
-                                    <!--<Image.Behaviors>
-                                        <Behaviors:IconTintColorBehavior TintColor="#10B981" />
-                                    </Image.Behaviors>-->
-                                </Image>
-                                <Label Text="Racha" 
-                                       TextColor="#374151"
-                                       FontSize="14"/>
-                            </HorizontalStackLayout>
-                            <Label Text="{Binding StreakDays}" 
-                                   TextColor="#111827"
-                                   FontSize="30"/>
-                            <Label Text="días" 
-                                   TextColor="#6B7280"
-                                   FontSize="12"/>
-                        </VerticalStackLayout>
-                    </Border>
-                </Grid>
-
-                <!-- Daily Goal Card -->
-                <Border Stroke="#E5E7EB"
-                        Background="White"
-                        StrokeThickness="1"
-                        StrokeShape="RoundRectangle 12"
-                        Padding="16">
-                    <VerticalStackLayout Spacing="12">
-                        <HorizontalStackLayout Spacing="8">
-                            <Image Source="meta_icono.png" 
-                                   WidthRequest="20"
-                                   HeightRequest="20">
-                                <!--<Image.Behaviors>
-                                    <Behaviors:IconTintColorBehavior TintColor="#A855F7" />
-                                </Image.Behaviors>-->
-                            </Image>
-                            <Label Text="Meta Diaria" 
-                                   TextColor="#374151"
-                                   FontSize="16"/>
-                        </HorizontalStackLayout>
-
-                        <Grid ColumnSpacing="10">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-
-                            <Label Grid.Column="0" 
-                                   Text="{Binding DailyGoalText}" 
-                                   TextColor="#6B7280"
-                                   FontSize="14"/>
-                            <Label Grid.Column="1" 
-                                   Text="{Binding DailyGoalPercentage, StringFormat='{0}%'}" 
-                                   TextColor="#A855F7"
-                                   FontSize="14"/>
-                        </Grid>
-
-                        <ProgressBar Progress="{Binding DailyGoalProgress}" 
-                                     ProgressColor="#A855F7"
-                                     HeightRequest="8"/>
+                    <!-- Saludo -->
+                    <VerticalStackLayout Grid.Row="0" Grid.Column="0" Spacing="5">
+                        <Label Text="Hola," 
+                               TextColor="White" 
+                               Opacity="0.9"
+                               FontSize="14"/>
+                        <Label x:Name="lblNombreUsuario"
+                               Text="Nombre Usuario"
+                               TextColor="White" 
+                               FontSize="24"/>
                     </VerticalStackLayout>
-                </Border>
 
-                <!-- Recent Activity Card -->
-                <Border Stroke="#E5E7EB"
-                        Background="White"
-                        StrokeThickness="1"
-                        StrokeShape="RoundRectangle 12"
-                        Padding="16">
-                    <VerticalStackLayout Spacing="12">
-                        <HorizontalStackLayout Spacing="8">
-                            <Image Source="upa_icono.png" 
-                                   WidthRequest="24"
-                                   HeightRequest="24"/>
-                            <Label Text="Última Pausa Activa" 
-                                   TextColor="#374151"
-                                   FontSize="16"/>
-                        </HorizontalStackLayout>
+                    <!-- Botón Perfil -->
+                    <ImageButton Grid.Row="0"  
+                                 Grid.Column="1"
+                                 BackgroundColor="#2563FF"
+                                 Source="icono_perfil.png"
+                                 VerticalOptions="Start"
+                                 Clicked="btnPerfil_Clicked"/>
 
-                        <Grid ColumnSpacing="12">
+                    <!-- Tarjeta Actividad -->
+                    <Border Grid.Row="1" 
+                            Grid.ColumnSpan="2"
+                            Background="White"
+                            StrokeThickness="0"
+                            Padding="16"
+                            Margin="0,20,0,0"
+                            StrokeShape="RoundRectangle 16">
+
+                        <Grid ColumnSpacing="15">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
-                            <Border Grid.Column="0"
+                            <!-- Icono -->
+                            <Border Grid.Column="0" 
                                     Background="#EBF5FF"
                                     StrokeThickness="0"
                                     StrokeShape="RoundRectangle 12"
                                     Padding="12">
+                                <Image Source="activity_icon.png" 
+                                       WidthRequest="24"
+                                       HeightRequest="24"/>
                             </Border>
 
+                            <!-- Info -->
                             <VerticalStackLayout Grid.Column="1" 
                                                  VerticalOptions="Center"
-                                                 Spacing="4">
-                                <Label Text="{Binding LastExerciseName}" 
-                                       TextColor="#111827"
-                                       FontSize="16"/>
-                                <Label Text="{Binding LastExerciseTime}" 
+                                                 Spacing="2">
+                                <Label Text="Tiempo sin movimiento" 
                                        TextColor="#6B7280"
                                        FontSize="14"/>
+                                <Label x:Name="lblTiempoSinMovimiento"
+                                       Text="0 min"
+                                       TextColor="#111827"
+                                       FontSize="24"/>
                             </VerticalStackLayout>
+
+                            <!-- Botón Ver Detalle -->
+                            <Button x:Name="btnVerDetalle"
+                                    Grid.Column="2" 
+                                    Text="Ver Detalle"
+                                    BackgroundColor="#2563FF"
+                                    TextColor="White"
+                                    CornerRadius="12"
+                                    Padding="15,8"
+                                    VerticalOptions="Center"
+                                    Clicked="btnVerDetalle_Clicked"/>
                         </Grid>
-                    </VerticalStackLayout>
-                </Border>
-
-                <!-- Quick Actions -->
-                <Grid ColumnSpacing="16" Margin="0,10,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-
-                    <Button Grid.Column="0"
-                            Text="Ejercicios"
-                            BackgroundColor="Transparent"
-                            BorderColor="#E5E7EB"
-                            BorderWidth="1"
-                            TextColor="#374151"
-                            CornerRadius="12"
-                            HeightRequest="80"
-                            Command="{Binding NavigateToExercisesCommand}">
-                        <Button.ImageSource>
-                            <FileImageSource File="ejercicios_icono.png"/>
-                        </Button.ImageSource>
-                    </Button>
-
-                    <Button Grid.Column="1"
-                            Text="Historial"
-                            BackgroundColor="Transparent"
-                            BorderColor="#E5E7EB"
-                            BorderWidth="1"
-                            TextColor="#374151"
-                            CornerRadius="12"
-                            HeightRequest="80"
-                            Command="{Binding NavigateToHistoryCommand}">
-                        <Button.ImageSource>
-                            <FileImageSource File="historial_icono.png"/>
-                        </Button.ImageSource>
-                    </Button>
+                    </Border>
                 </Grid>
 
-            </VerticalStackLayout>
+                <!-- Content Section -->
+                <VerticalStackLayout Padding="20" Spacing="16">
 
-        </VerticalStackLayout>
-    </ScrollView>
+                    <!-- Título sección -->
+                    <Label Text="Resumen de Hoy" 
+                           TextColor="#111827"
+                           FontSize="20"/>
+
+                    <!-- Stats Grid -->
+                    <Grid ColumnSpacing="16" RowSpacing="16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Pausas Card -->
+                        <Border Grid.Column="0" 
+                                Stroke="#E5E7EB"
+                                Background="White"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 12"
+                                Padding="16">
+                            <VerticalStackLayout Spacing="8">
+                                <HorizontalStackLayout Spacing="8">
+                                    <Image Source="pausas_icono.png" 
+                                           WidthRequest="20"
+                                           HeightRequest="20"/>
+                                    <Label Text="Pausas" 
+                                           TextColor="#374151"
+                                           FontSize="14"/>
+                                </HorizontalStackLayout>
+                                <Label x:Name="lblPausasHoy"
+                                       Text="0"
+                                       TextColor="#111827"
+                                       FontSize="30"/>
+                                <Label Text="completadas" 
+                                       TextColor="#6B7280"
+                                       FontSize="12"/>
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <!-- Racha Card -->
+                        <Border Grid.Column="1" 
+                                Stroke="#E5E7EB"
+                                Background="White"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 12"
+                                Padding="16">
+                            <VerticalStackLayout Spacing="8">
+                                <HorizontalStackLayout Spacing="8">
+                                    <Image Source="racha_icono.png" 
+                                           WidthRequest="20"
+                                           HeightRequest="20"/>
+                                    <Label Text="Racha" 
+                                           TextColor="#374151"
+                                           FontSize="14"/>
+                                </HorizontalStackLayout>
+                                <Label x:Name="lblRachaDias"
+                                       Text="0"
+                                       TextColor="#111827"
+                                       FontSize="30"/>
+                                <Label Text="días" 
+                                       TextColor="#6B7280"
+                                       FontSize="12"/>
+                            </VerticalStackLayout>
+                        </Border>
+                    </Grid>
+
+                    <!-- Meta Diaria Card -->
+                    <Border Stroke="#E5E7EB"
+                            Background="White"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 12"
+                            Padding="16">
+                        <VerticalStackLayout Spacing="12">
+                            <HorizontalStackLayout Spacing="8">
+                                <Image Source="meta_icono.png" 
+                                       WidthRequest="20"
+                                       HeightRequest="20"/>
+                                <Label Text="Meta Diaria" 
+                                       TextColor="#374151"
+                                       FontSize="16"/>
+                            </HorizontalStackLayout>
+
+                            <Grid ColumnSpacing="10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Label x:Name="lblMetaDiariaTexto"
+                                       Grid.Column="0" 
+                                       Text="0 de 0 pausas"
+                                       TextColor="#6B7280"
+                                       FontSize="14"/>
+                                <Label x:Name="lblMetaDiariaPorcentaje"
+                                       Grid.Column="1" 
+                                       Text="0%"
+                                       TextColor="#A855F7"
+                                       FontSize="14"/>
+                            </Grid>
+
+                            <ProgressBar x:Name="pbMetaDiaria"
+                                         Progress="0"
+                                         ProgressColor="#A855F7"
+                                         HeightRequest="8"/>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- Última Pausa Activa -->
+                    <Border Stroke="#E5E7EB"
+                            Background="White"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 12"
+                            Padding="16">
+                        <VerticalStackLayout Spacing="12">
+                            <HorizontalStackLayout Spacing="8">
+                                <Image Source="upa_icono.png" 
+                                       WidthRequest="24"
+                                       HeightRequest="24"/>
+                                <Label Text="Última Pausa Activa" 
+                                       TextColor="#374151"
+                                       FontSize="16"/>
+                            </HorizontalStackLayout>
+
+                            <Grid ColumnSpacing="12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border Grid.Column="0"
+                                        Background="#EBF5FF"
+                                        StrokeThickness="0"
+                                        StrokeShape="RoundRectangle 12"
+                                        Padding="12">
+                                    <!-- Podrías poner aquí un icono de ejercicio -->
+                                </Border>
+
+                                <VerticalStackLayout Grid.Column="1" 
+                                                     VerticalOptions="Center"
+                                                     Spacing="4">
+                                    <Label x:Name="lblUltimaPausaNombre"
+                                           Text="Nombre Ejercicio"
+                                           TextColor="#111827"
+                                           FontSize="16"/>
+                                    <Label x:Name="lblUltimaPausaTiempo"
+                                           Text="Hace X tiempo"
+                                           TextColor="#6B7280"
+                                           FontSize="14"/>
+                                </VerticalStackLayout>
+                            </Grid>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- Accesos rápidos -->
+                    <Grid ColumnSpacing="16" Margin="0,10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Button x:Name="btnEjercicios"
+                                Grid.Column="0"
+                                Text="Ejercicios"
+                                BackgroundColor="Transparent"
+                                BorderColor="#E5E7EB"
+                                BorderWidth="1"
+                                TextColor="#374151"
+                                CornerRadius="12"
+                                HeightRequest="80"
+                                Clicked="btnEjercicios_Clicked">
+                            <Button.ImageSource>
+                                <FileImageSource File="ejercicios_icono.png"/>
+                            </Button.ImageSource>
+                        </Button>
+
+                        <Button x:Name="btnHistorial"
+                                Grid.Column="1"
+                                Text="Historial"
+                                BackgroundColor="Transparent"
+                                BorderColor="#E5E7EB"
+                                BorderWidth="1"
+                                TextColor="#374151"
+                                CornerRadius="12"
+                                HeightRequest="80"
+                                Clicked="btnHistorial_Clicked">
+                            <Button.ImageSource>
+                                <FileImageSource File="historial_icono.png"/>
+                            </Button.ImageSource>
+                        </Button>
+                    </Grid>
+
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- MENÚ INFERIOR SIEMPRE VISIBLE -->
+        <Border Grid.Row="1"
+                Background="White"
+                Stroke="#E5E7EB"
+                StrokeThickness="1">
+            <HorizontalStackLayout Padding="20,8"
+                                   Spacing="30"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center">
+
+                <Button x:Name="btnMenuInicio"
+                        Text="Inicio"
+                        FontSize="12"
+                        BackgroundColor="Transparent"
+                        TextColor="#2563FF"
+                        Clicked="btnMenuInicio_Clicked"/>
+
+                <Button x:Name="btnMenuMonitor"
+                        Text="Monitor"
+                        FontSize="12"
+                        BackgroundColor="Transparent"
+                        TextColor="#6B7280"
+                        Clicked="btnMenuMonitor_Clicked"/>
+
+                <Button x:Name="btnMenuHistorial"
+                        Text="Historial"
+                        FontSize="12"
+                        BackgroundColor="Transparent"
+                        TextColor="#6B7280"
+                        Clicked="btnMenuHistorial_Clicked"/>
+
+                <Button x:Name="btnMenuAjustes"
+                        Text="Ajustes"
+                        FontSize="12"
+                        BackgroundColor="Transparent"
+                        TextColor="#6B7280"
+                        Clicked="btnMenuAjustes_Clicked"/>
+            </HorizontalStackLayout>
+        </Border>
+
+    </Grid>
 </ContentPage>

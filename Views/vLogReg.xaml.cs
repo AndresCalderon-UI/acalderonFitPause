@@ -42,7 +42,7 @@ public partial class vLogReg : ContentPage
             string buscarUsuario = $"?Correo=eq.{correo}&Contrasena=eq.{pass}";
 
 
-            var respuesta = await servicioSupabase.ConsultarAsync(configSupabase.TblUsuario, buscarUsuario);
+            var respuesta = await servicioSupabase.ConsultarAsync(configSupabase.tblUsuario, buscarUsuario);
 
             if (respuesta.IsSuccessStatusCode)
             {
@@ -51,7 +51,8 @@ public partial class vLogReg : ContentPage
 
                 if (usuarios != null && usuarios.Count > 0)
                 {
-                    await Navigation.PushAsync(new vPrincipal());
+                    var usuario = usuarios[0];
+                    await Navigation.PushAsync(new vPrincipal(usuario));
                 }
                 else
                 {
@@ -102,7 +103,7 @@ public partial class vLogReg : ContentPage
 
             // Consulta por correo
             string buscaCorreo = $"?Correo=eq.{correo}";
-            var respuesta = await servicioSupabase.ConsultarAsync(configSupabase.TblUsuario, buscaCorreo);
+            var respuesta = await servicioSupabase.ConsultarAsync(configSupabase.tblUsuario, buscaCorreo);
 
             if (!respuesta.IsSuccessStatusCode)
             {
@@ -128,7 +129,7 @@ public partial class vLogReg : ContentPage
             }
 
             // Login exitoso
-            await Navigation.PushAsync(new Views.vPrincipal());
+            await Navigation.PushAsync(new Views.vPrincipal(usuario));
         }
         catch (Exception ex)
         {
@@ -169,12 +170,19 @@ public partial class vLogReg : ContentPage
 
             };
 
-            var respuesta = await servicioSupabase.InsertarAsync(configSupabase.TblUsuario, datos);
+            var respuesta = await servicioSupabase.InsertarAsync(configSupabase.tblUsuario, datos);
 
             if (respuesta.IsSuccessStatusCode)
             {
                 await DisplayAlert("Listo!", "tu cuenta ha sido creada", "OK");
-                await Navigation.PushAsync(new vPrincipal());
+
+                var usuarioNuevo = new Usuario
+                {
+                    Nombre = txtRegNombre.Text?.Trim(),
+                    Correo = txtRegCorreo.Text?.Trim().ToLower()
+                };
+
+                await Navigation.PushAsync(new vPrincipal(usuarioNuevo));
             }
             else
             {
@@ -204,7 +212,7 @@ public partial class vLogReg : ContentPage
 
             // Paso 2: buscar usuario por correo
             string buscaCorreo = $"?Correo=eq.{correo}";
-            var respuesta = await servicioSupabase.ConsultarAsync(configSupabase.TblUsuario, buscaCorreo);
+            var respuesta = await servicioSupabase.ConsultarAsync(configSupabase.tblUsuario, buscaCorreo);
 
             if (!respuesta.IsSuccessStatusCode)
             {
@@ -249,7 +257,7 @@ public partial class vLogReg : ContentPage
             var datos = new { Pass = hashNuevaPass };
             var filtroUpdate = $"?Correo=eq.{usuario.Correo.Trim().ToLower()}";
 
-            var resultado = await servicioSupabase.ActualizarAsync(configSupabase.TblUsuario, filtroUpdate, datos);
+            var resultado = await servicioSupabase.ActualizarAsync(configSupabase.tblUsuario, filtroUpdate, datos);
 
             if (resultado.IsSuccessStatusCode)
             {
