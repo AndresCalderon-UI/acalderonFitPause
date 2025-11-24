@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="acalderonFitPause.Views.vConfiguracion"
+             Title="Configuracion">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <!-- Contenido scrolleable -->
+            <RowDefinition Height="*"/>
+            <!-- Menú inferior -->
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- CONTENIDO SCROLL -->
+        <ScrollView Grid.Row="0">
+            <VerticalStackLayout Padding="0">
+
+                <!-- ENCABEZADO -->
+                <Grid BackgroundColor="#2563FF" Padding="0,0,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="60"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50"/>
+                        <ColumnDefinition Width="250"/>
+                    </Grid.ColumnDefinitions>
+
+                    <ImageButton x:Name="btnRegresar"
+                                 Grid.Row="0"
+                                 Grid.Column="0"
+                                 Margin="10,18,0,18"
+                                 WidthRequest="24"
+                                 HeightRequest="24"
+                                 BackgroundColor="Transparent"
+                                 BorderWidth="0"
+                                 Clicked="btnRegresar_Clicked"
+                                 Source="regresar_icono.png"/>
+
+                    <Label x:Name="lblTitulo"
+                           Grid.Row="0"
+                           Grid.Column="1"
+                           Margin="0,0,0,0"
+                           VerticalTextAlignment="Center"
+                           Text="Configuracion"
+                           TextColor="White"
+                           FontSize="22"/>
+                </Grid>
+
+                <!-- CONTENIDO -->
+                <VerticalStackLayout Padding="20,20,20,20" Spacing="20">
+
+                    <!-- TARJETA NOTIFICACIONES -->
+                    <Frame Padding="16"
+                           HasShadow="False"
+                           CornerRadius="12"
+                           BackgroundColor="White"
+                           BorderColor="#E5E7EB">
+
+                        <VerticalStackLayout Spacing="16">
+
+                            <!-- TITULO NOTIFICACIONES -->
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="24"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="24"/>
+                                    <ColumnDefinition Width="200"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Image Grid.Row="0"
+                                       Grid.Column="0"
+                                       WidthRequest="20"
+                                       HeightRequest="20"
+                                       Source="icono_campana.png"/>
+
+                                <Label x:Name="lblNotificaciones"
+                                       Grid.Row="0"
+                                       Grid.Column="1"
+                                       VerticalTextAlignment="Center"
+                                       Text="Notificaciones"
+                                       FontSize="16"
+                                       TextColor="#111827"/>
+                            </Grid>
+
+                            <!-- ACTIVAR NOTIFICACIONES -->
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="40"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="220"/>
+                                    <ColumnDefinition Width="40"/>
+                                </Grid.ColumnDefinitions>
+
+                                <VerticalStackLayout Grid.Row="0"
+                                                     Grid.Column="0"
+                                                     Spacing="3">
+                                    <Label x:Name="lblActivarNotificaciones"
+                                           Text="Activar notificaciones"
+                                           TextColor="#111827"/>
+                                    <Label x:Name="lblDescripcionNotificaciones"
+                                           Text="Recibe recordatorios de pausas"
+                                           FontSize="12"
+                                           TextColor="#6B7280"/>
+                                </VerticalStackLayout>
+
+                                <Switch x:Name="swNotificaciones"
+                                        Grid.Row="0"
+                                        Grid.Column="1"
+                                        VerticalOptions="Center"/>
+                            </Grid>
+
+                        </VerticalStackLayout>
+                    </Frame>
+
+                    <!-- TARJETA CONFIGURACION ACTIVIDAD -->
+                    <Frame Padding="16"
+                           HasShadow="False"
+                           CornerRadius="12"
+                           BackgroundColor="White"
+                           BorderColor="#E5E7EB">
+
+                        <VerticalStackLayout Spacing="16">
+
+                            <!-- TITULO CONFIGURACION ACTIVIDAD -->
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="24"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="24"/>
+                                    <ColumnDefinition Width="230"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Image Grid.Row="0"
+                                       Grid.Column="0"
+                                       WidthRequest="20"
+                                       HeightRequest="20"
+                                       Source="icono_reloj.png"/>
+
+                                <Label x:Name="lblConfiguracionActividad"
+                                       Grid.Row="0"
+                                       Grid.Column="1"
+                                       VerticalTextAlignment="Center"
+                                       Text="Configuracion de Actividad"
+                                       FontSize="16"
+                                       TextColor="#111827"/>
+                            </Grid>
+
+                            <!-- INTERVALO RECORDATORIO -->
+                            <VerticalStackLayout Spacing="8">
+
+                                <Label x:Name="lblIntervalo"
+                                       Text="Intervalo de recordatorio"
+                                       TextColor="#111827"/>
+
+                                <Picker x:Name="pkIntervalo"
+                                        Title="Seleccione intervalo"
+                                        SelectedIndexChanged="pkIntervalo_SelectedIndexChanged">
+                                    <Picker.Items>
+                                        <x:String>30 minutos</x:String>
+                                        <x:String>45 minutos</x:String>
+                                        <x:String>60 minutos</x:String>
+                                        <x:String>90 minutos</x:String>
+                                    </Picker.Items>
+                                </Picker>
+
+                                <Label x:Name="lblTextoIntervalo"
+                                       FontSize="12"
+                                       TextColor="#6B7280"
+                                       Text="Recibiras un recordatorio cada 45 minutos de inactividad"/>
+                            </VerticalStackLayout>
+
+                            <!-- META DIARIA -->
+                            <VerticalStackLayout Spacing="8">
+
+                                <Label x:Name="lblMeta"
+                                       Text="Meta diaria de pausas"
+                                       TextColor="#111827"/>
+
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="40"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="230"/>
+                                        <ColumnDefinition Width="40"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Slider x:Name="sldMeta"
+                                            Grid.Row="0"
+                                            Grid.Column="0"
+                                            Minimum="2"
+                                            Maximum="12"
+                                            ValueChanged="sldMeta_ValueChanged"/>
+
+                                    <Label x:Name="lblMetaValor"
+                                           Grid.Row="0"
+                                           Grid.Column="1"
+                                           HorizontalTextAlignment="End"
+                                           VerticalTextAlignment="Center"
+                                           FontSize="24"
+                                           TextColor="#A855F7"
+                                           Text="6"/>
+                                </Grid>
+
+                                <Label x:Name="lblMetaDescripcion"
+                                       Text="Pausas por dia"
+                                       FontSize="12"
+                                       TextColor="#6B7280"/>
+                            </VerticalStackLayout>
+
+                        </VerticalStackLayout>
+                    </Frame>
+
+                    <!-- BOTON GUARDAR -->
+                    <Button x:Name="btnGuardar"
+                            Text="Guardar configuracion"
+                            BackgroundColor="#2563FF"
+                            TextColor="White"
+                            CornerRadius="8"
+                            Clicked="btnGuardar_Clicked"/>
+
+                    <Button x:Name="btnCerrarSesion"
+                            Text="Cerrar sesion"
+                            BackgroundColor="Transparent"
+                            TextColor="Red"
+                            CornerRadius="8"
+                            Clicked="btnCerrarSesion_Clicked"/>
+                    
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- MENÚ INFERIOR -->
+        <Border Grid.Row="1"
+                Background="White"
+                Stroke="#E5E7EB"
+                StrokeThickness="1">
+            <HorizontalStackLayout Padding="20,8"
+                                   Spacing="30"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center">
+
+                <Button x:Name="btnMenuInicio"
+                        Text="Inicio"
+                        FontSize="12"
+                        BackgroundColor="Transparent"
+                        TextColor="#6B7280"
+                        Clicked="btnMenuInicio_Clicked"/>
+
+                <Button x:Name="btnMenuMonitor"
+                        Text="Monitor"
+                        FontSize="12"
+                        BackgroundColor="Transparent"
+                        TextColor="#6B7280"
+                        Clicked="btnMenuMonitor_Clicked"/>
+
+                <Button x:Name="btnMenuHistorial"
+                        Text="Historial"
+                        FontSize="12"
+                        BackgroundColor="Transparent"
+                        TextColor="#6B7280"
+                        Clicked="btnMenuHistorial_Clicked"/>
+
+                <Button x:Name="btnMenuAjustes"
+                        Text="Ajustes"
+                        FontSize="12"
+                        BackgroundColor="Transparent"
+                        TextColor="#2563FF"
+                        Clicked="btnMenuAjustes_Clicked"/>
+            </HorizontalStackLayout>
+        </Border>
+
+    </Grid>
+</ContentPage>

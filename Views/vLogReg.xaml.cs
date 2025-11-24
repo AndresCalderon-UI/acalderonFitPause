@@ -32,39 +32,9 @@ public partial class vLogReg : ContentPage
             string correo = txtLoginCorreo.Text?.Trim();
             string pass = txtLoginPass.Text?.Trim();
 
-            if (string.IsNullOrWhiteSpace(correo) || string.IsNullOrWhiteSpace(pass))
-            {
-                await DisplayAlert("Error", "Ingresa tu correo y contraseña", "OK");
-                return;
-            }
-
-            // Filtro para buscar usuario con ese correo y alias
             string buscarUsuario = $"?Correo=eq.{correo}&Contrasena=eq.{pass}";
 
-
             var respuesta = await servicioSupabase.ConsultarAsync(configSupabase.tblUsuario, buscarUsuario);
-
-            if (respuesta.IsSuccessStatusCode)
-            {
-                var contenido = await respuesta.Content.ReadAsStringAsync();
-                var usuarios = JsonSerializer.Deserialize<List<Usuario>>(contenido);
-
-                if (usuarios != null && usuarios.Count > 0)
-                {
-                    var usuario = usuarios[0];
-                    await Navigation.PushAsync(new vPrincipal(usuario));
-                }
-                else
-                {
-                    await DisplayAlert("Error", "Usuario y/o contraseña incorrectos", "OK");
-                }
-            }
-            else
-            {
-                var error = await respuesta.Content.ReadAsStringAsync();
-                await DisplayAlert("Error", $"No se pudo iniciar sesión: {error}", "OK");
-            }
-
         }
         catch (Exception ex)
         {
@@ -174,15 +144,15 @@ public partial class vLogReg : ContentPage
 
             if (respuesta.IsSuccessStatusCode)
             {
-                await DisplayAlert("Listo!", "tu cuenta ha sido creada", "OK");
+                await DisplayAlert("Listo!", "tu cuenta ha sido creada, por favor inicia sesión", "OK");
 
-                var usuarioNuevo = new Usuario
-                {
-                    Nombre = txtRegNombre.Text?.Trim(),
-                    Correo = txtRegCorreo.Text?.Trim().ToLower()
-                };
+                //var usuarioNuevo = new Usuario
+                //{
+                //    Nombre = txtRegNombre.Text?.Trim(),
+                //    Correo = txtRegCorreo.Text?.Trim().ToLower()
+                //};
 
-                await Navigation.PushAsync(new vPrincipal(usuarioNuevo));
+                //await Navigation.PushAsync(new vPrincipal(usuarioNuevo));
             }
             else
             {

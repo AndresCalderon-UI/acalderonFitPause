@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="acalderonFitPause.Views.vFormularioEjercicio"
+             Title="Ejercicio"
+             BackgroundColor="#F3F4F6">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="16">
+
+            <Label x:Name="lblTituloFormulario"
+                   Text="Nuevo ejercicio"
+                   FontSize="22"
+                   FontAttributes="Bold"
+                   TextColor="#111827" />
+
+            <Entry x:Name="txtNombre"
+                   Placeholder="Nombre" />
+
+            <Editor x:Name="txtDescripcion"
+                    Placeholder="Descripción"
+                    AutoSize="TextChanges" />
+
+            <Entry x:Name="txtDuracion"
+                   Placeholder="Duración (minutos)"
+                   Keyboard="Numeric" />
+
+            <Entry x:Name="txtCategoria"
+                   Placeholder="Categoría" />
+
+            <Entry x:Name="txtDificultad"
+                   Placeholder="Dificultad" />
+
+            <Entry x:Name="txtImagenUrl"
+                   Placeholder="URL de imagen (opcional)" />
+
+            <Button x:Name="btnGuardar"
+                    Text="Guardar"
+                    HeightRequest="48"
+                    CornerRadius="12"
+                    BackgroundColor="#2563FF"
+                    TextColor="White"
+                    Clicked="btnGuardar_Clicked" />
+
+            <Button Text="Cancelar"
+                    HeightRequest="40"
+                    CornerRadius="12"
+                    BackgroundColor="#E5E7EB"
+                    TextColor="#374151"
+                    Clicked="btnCancelar_Clicked" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

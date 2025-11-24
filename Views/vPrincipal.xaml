@@ -34,14 +34,6 @@
                                FontSize="24"/>
                     </VerticalStackLayout>
 
-                    <!-- Botón Perfil -->
-                    <ImageButton Grid.Row="0"  
-                                 Grid.Column="1"
-                                 BackgroundColor="#2563FF"
-                                 Source="icono_perfil.png"
-                                 VerticalOptions="Start"
-                                 Clicked="btnPerfil_Clicked"/>
-
                     <!-- Tarjeta Actividad -->
                     <Border Grid.Row="1" 
                             Grid.ColumnSpan="2"

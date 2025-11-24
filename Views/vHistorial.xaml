@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="acalderonFitPause.Views.vHistorial"
+             Title="Historial">
+
+    <!-- CONTENEDOR PRINCIPAL -->
+    <Grid>
+        <Grid.RowDefinitions>
+            <!-- Contenido scrolleable -->
+            <RowDefinition Height="*"/>
+            <!-- Menú inferior -->
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- SCROLL DE CONTENIDO -->
+        <ScrollView Grid.Row="0">
+            <Grid>
+                <!-- Grid principal: fila 0 header, fila 1 contenido -->
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="220"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- HEADER -->
+                <Grid Grid.Row="0"
+                      BackgroundColor="#2563FF"
+                      Padding="20">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="140"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Barra superior con boton volver y titulo -->
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="40"/>
+                            <ColumnDefinition Width="260"/>
+                        </Grid.ColumnDefinitions>
+
+                        <ImageButton x:Name="btnAtras"
+                                     Grid.Column="0"
+                                     BackgroundColor="Transparent"
+                                     Source="regresar_icono.png"
+                                     WidthRequest="24"
+                                     HeightRequest="24"
+                                     Clicked="btnBack_Clicked"/>
+
+                        <Label x:Name="lblTitulo"
+                               Grid.Column="1"
+                               Text="Historial"
+                               TextColor="White"
+                               FontSize="24"
+                               VerticalOptions="Center"/>
+                    </Grid>
+
+                    <!-- Tarjeta de estadisticas -->
+                    <Frame Grid.Row="1"
+                           BackgroundColor="White"
+                           CornerRadius="16"
+                           Padding="16"
+                           Margin="0,20,0,0"
+                           HasShadow="False">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="160"/>
+                                <ColumnDefinition Width="160"/>
+                            </Grid.ColumnDefinitions>
+
+                            <VerticalStackLayout Grid.Column="0"
+                                                 HorizontalOptions="Center"
+                                                 Spacing="4">
+                                <Label x:Name="lblTotalPausasTitulo"
+                                       Text="Total Pausas"
+                                       TextColor="#6B7280"
+                                       FontSize="14"
+                                       HorizontalTextAlignment="Center"/>
+                                <Label x:Name="lblTotalPausas"
+                                       Text="0"
+                                       TextColor="#2563FF"
+                                       FontSize="30"
+                                       HorizontalTextAlignment="Center"/>
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout Grid.Column="1"
+                                                 HorizontalOptions="Center"
+                                                 Spacing="4">
+                                <Label x:Name="lblTiempoTotalTitulo"
+                                       Text="Tiempo Total"
+                                       TextColor="#6B7280"
+                                       FontSize="14"
+                                       HorizontalTextAlignment="Center"/>
+                                <Label x:Name="lblTiempoTotal"
+                                       Text="0 min"
+                                       TextColor="#A855F7"
+                                       FontSize="30"
+                                       HorizontalTextAlignment="Center"/>
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Frame>
+                </Grid>
+
+                <!-- CONTENIDO -->
+                <VerticalStackLayout Grid.Row="1"
+                                     Padding="20"
+                                     Spacing="16">
+
+                    <!-- FILTRO POR FECHAS -->
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="40"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="30"/>
+                            <ColumnDefinition Width="140"/>
+                            <ColumnDefinition Width="140"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Image Grid.Row="0"
+                               Grid.Column="0"
+                               Grid.RowSpan="2"
+                               Source="calendario_icono.png"
+                               WidthRequest="20"
+                               HeightRequest="20"
+                               VerticalOptions="Center"/>
+
+                        <Label x:Name="lblDesde"
+                               Grid.Row="0"
+                               Grid.Column="1"
+                               Text="Desde"
+                               FontSize="14"
+                               TextColor="#6B7280"
+                               VerticalOptions="End"/>
+
+                        <Label x:Name="lblHasta"
+                               Grid.Row="0"
+                               Grid.Column="2"
+                               Text="Hasta"
+                               FontSize="14"
+                               TextColor="#6B7280"
+                               VerticalOptions="End"/>
+
+                        <DatePicker x:Name="dtpDesde"
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    DateSelected="dtpDesde_DateSelected"/>
+
+                        <DatePicker x:Name="dtpHasta"
+                                    Grid.Row="1"
+                                    Grid.Column="2"
+                                    DateSelected="dtpHasta_DateSelected"/>
+                    </Grid>
+
+                    <!-- LISTA DE HISTORIAL -->
+                    <CollectionView x:Name="cvHistorial"
+                                    ItemsSource="{Binding HistorialPausas}"
+                                    SelectionMode="None">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Frame BorderColor="#E5E7EB"
+                                       BackgroundColor="White"
+                                       CornerRadius="12"
+                                       Padding="16"
+                                       Margin="0,0,0,12"
+                                       HasShadow="False">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="56"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- Icono -->
+                                        <Frame Grid.Column="0"
+                                               BackgroundColor="#EBF5FF"
+                                               CornerRadius="12"
+                                               Padding="12"
+                                               HasShadow="False"
+                                               VerticalOptions="Start">
+                                            <Image Source="ejercicios_icono.png"
+                                                   WidthRequest="20"
+                                                   HeightRequest="20"/>
+                                        </Frame>
+
+                                        <!-- Contenido -->
+                                        <VerticalStackLayout Grid.Column="1"
+                                                             Spacing="8">
+
+                                            <!-- Encabezado: fecha y duracion -->
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="24"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <VerticalStackLayout Grid.Column="0"
+                                                                     Spacing="4">
+                                                    <Label Text="{Binding FechaHora, StringFormat='{}{0:dd/MM/yyyy HH:mm}'}"
+                                                           TextColor="#111827"
+                                                           FontSize="16"/>
+                                                    <Label Text="{Binding DuracionReal, StringFormat='Duración {0} min'}"
+                                                           TextColor="#6B7280"
+                                                           FontSize="14"/>
+                                                </VerticalStackLayout>
+                                            </Grid>
+
+                                            <!-- Frase -->
+                                            <Label Text="{Binding FraseMotivacional}"
+                                                   TextColor="#6B7280"
+                                                   FontSize="14"/>
+
+                                            <!-- Boton eliminar -->
+                                            <Button x:Name="btnEliminar"
+                                                    Text="Eliminar"
+                                                    BackgroundColor="Transparent"
+                                                    BorderColor="#FEE2E2"
+                                                    BorderWidth="1"
+                                                    TextColor="#EF4444"
+                                                    CornerRadius="8"
+                                                    Padding="12,6"
+                                                    Clicked="btnEliminar_Clicked">
+                                                <Button.ImageSource>
+                                                    <FileImageSource File="eliminar_icono.png"/>
+                                                </Button.ImageSource>
+                                            </Button>
+
+                                        </VerticalStackLayout>
+                                    </Grid>
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+
+                    <!-- ESTADO VACIO -->
+                    <Frame x:Name="frmVacio"
+                           BorderColor="#E5E7EB"
+                           BackgroundColor="White"
+                           CornerRadius="12"
+                           Padding="32"
+                           HasShadow="False"
+                           IsVisible="False">
+                        <VerticalStackLayout Spacing="12"
+                                             HorizontalOptions="Center">
+                            <Image Source="calendario_icono.png"
+                                   WidthRequest="48"
+                                   HeightRequest="48"
+                                   Opacity="0.3"/>
+                            <Label x:Name="lblVacio"
+                                   Text="No hay pausas registradas"
+                                   TextColor="#6B7280"
+                                   HorizontalTextAlignment="Center"/>
+                        </VerticalStackLayout>
+                    </Frame>
+
+                </VerticalStackLayout>
+            </Grid>
+        </ScrollView>
+
+        <!-- MENÚ INFERIOR -->
+        <Border Grid.Row="1"
+                Background="White"
+                Stroke="#E5E7EB"
+                StrokeThickness="1">
+            <HorizontalStackLayout Padding="20,8"
+                                   Spacing="30"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center">
+
+                <Button x:Name="btnMenuInicio"
+                        Text="Inicio"
+                        FontSize="12"
+                        BackgroundColor="Transparent"
+                        TextColor="#6B7280"
+                        Clicked="btnMenuInicio_Clicked"/>
+
+                <Button x:Name="btnMenuMonitor"
+                        Text="Monitor"
+                        FontSize="12"
+                        BackgroundColor="Transparent"
+                        TextColor="#6B7280"
+                        Clicked="btnMenuMonitor_Clicked"/>
+
+                <Button x:Name="btnMenuHistorial"
+                        Text="Historial"
+                        FontSize="12"
+                        BackgroundColor="Transparent"
+                        TextColor="#2563FF"
+                        Clicked="btnMenuHistorial_Clicked"/>
+
+                <Button x:Name="btnMenuAjustes"
+                        Text="Ajustes"
+                        FontSize="12"
+                        BackgroundColor="Transparent"
+                        TextColor="#6B7280"
+                        Clicked="btnMenuAjustes_Clicked"/>
+            </HorizontalStackLayout>
+        </Border>
+
+    </Grid>
+</ContentPage>

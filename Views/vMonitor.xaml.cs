@@ -1,43 +1,64 @@
 using acalderonFitPause.Models;
 using acalderonFitPause.Utils;
 using Microsoft.Maui.Dispatching;
-using Plugin.LocalNotification;
 using Microsoft.Maui.Devices.Sensors;
+using Plugin.LocalNotification;
 
 namespace acalderonFitPause.Views
 {
     public partial class vMonitor : ContentPage
     {
-        // ==========================================
-        // ESTADO COMPARTIDO ENTRE TODAS LAS vMonitor
-        // ==========================================
+        #region Constantes
+
+        // Umbral para detectar movimiento a partir del acelerómetro
+        private const double UMBRAL_MOVIMIENTO = 0.15;
+
+        #endregion
+
+        #region Estado estático compartido (entre todas las vMonitor)
+
         private static bool _monitorActivo = true;
-        private static int _tiempoSinMovimientoSeg = 0;  // contador REAL en segundos
-        private static int _tiempoObjetivoMin = 1;       // meta (en minutos)
+        private static int _tiempoSinMovimientoSeg = 0;      // contador REAL en segundos
+        private static int _tiempoObjetivoMin = 1;           // meta (en minutos)
         private static DateTime _ultimaActividad = DateTime.Now;
         private static bool _estadoInicializado = false;
-
-        // DispatcherTimer que dispara cada segundo
-        private readonly IDispatcherTimer _temporizador;
         private static bool _enMovimiento = false;
 
+        // Referencia a la instancia activa (para métodos estáticos)
+        private static vMonitor _instanciaActiva;
+
+        private const bool MODO_PRUEBAS_SEGUNDOS = true;
+
+        private static int ObtenerTiempoLimite()
+        {
+            // En modo pruebas: el valor de _tiempoObjetivoMin se toma como segundos.
+            // En modo "real": se toma como minutos -> minutos * 60.
+            return MODO_PRUEBAS_SEGUNDOS
+                ? _tiempoObjetivoMin
+                : _tiempoObjetivoMin * 60;
+        }
+
+
+        #endregion
+
+        #region Campos de instancia
+
+        private readonly IDispatcherTimer _temporizador;
         private readonly Usuario _usuario;
         private ConfiguracionUsuario _configuracion;
+
+        private bool _notificacionesActivas = true;
+
+        #endregion
+
+        #region Constructor
 
         public vMonitor(Usuario usuario)
         {
             InitializeComponent();
             _usuario = usuario;
 
-            // SOLO LA PRIMERA VEZ se inicializa el estado
-            if (!_estadoInicializado)
-            {
-                _monitorActivo = true;
-                _tiempoSinMovimientoSeg = 0;
-                _tiempoObjetivoMin = 1;
-                _ultimaActividad = DateTime.Now;
-                _estadoInicializado = true;
-            }
+            InicializarEstadoCompartido();
 
             // DispatcherTimer de 1 segundo
             _temporizador = Dispatcher.CreateTimer();
@@ -47,13 +68,30 @@ namespace acalderonFitPause.Views
             MarcarMenuSeleccionado("Monitor");
         }
 
-        // ==========================================
-        // Cargar configuracion cuando entras a la vista
-        // ==========================================
+        private void InicializarEstadoCompartido()
+        {
+            // SOLO LA PRIMERA VEZ se inicializa el estado
+            if (_estadoInicializado)
+                return;
+
+            _monitorActivo = true;
+            _tiempoSinMovimientoSeg = 0;
+            _tiempoObjetivoMin = 1;
+            _ultimaActividad = DateTime.Now;
+            _estadoInicializado = true;
+        }
+
+        #endregion
+
+        #region Ciclo de vida de la página
+
         protected override async void OnAppearing()
         {
             base.OnAppearing();
 
+            _instanciaActiva = this;
+
+            // Re-suscribimos el acelerómetro para evitar handlers duplicados
             Accelerometer.ReadingChanged -= leeAcelerometro;
             Accelerometer.ReadingChanged += leeAcelerometro;
 
@@ -64,9 +102,11 @@ namespace acalderonFitPause.Views
             }
             catch
             {
+                // Podrías loguear el error si lo necesitas
             }
 
             await CargarConfiguracionUsuarioAsync();
+
             lblMaxTiempo.Text = "de " + _tiempoObjetivoMin + " min";
 
             if (_monitorActivo)
@@ -76,9 +116,46 @@ namespace acalderonFitPause.Views
             ActualizarPantalla();
         }
 
-        // ==========================================
-        // CONSULTAR CONFIGURACION EN BD
-        // ==========================================
+        #endregion
+
+        #region Métodos estáticos llamados desde otras vistas
+
+        public static void PausarMonitorPorRutina()
+        {
+            if (_instanciaActiva == null)
+                return;
+
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                _monitorActivo = false;
+                _instanciaActiva._temporizador.Stop();
+                _instanciaActiva.ActualizarTextoBotonMonitor();
+                _instanciaActiva.ActualizarPantalla();
+            });
+        }
+
+        public static void ReanudarMonitorDespuesRutina()
+        {
+            if (_instanciaActiva == null)
+                return;
+
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                // Se reinicia el conteo por inactividad y se retoma el monitor
+                _tiempoSinMovimientoSeg = 0;
+                _ultimaActividad = DateTime.Now;
+                _monitorActivo = true;
+
+                _instanciaActiva._temporizador.Start();
+                _instanciaActiva.ActualizarTextoBotonMonitor();
+                _instanciaActiva.ActualizarPantalla();
+            });
+        }
+
+        #endregion
+
+        #region Carga de configuración desde la BD
+
         private async Task CargarConfiguracionUsuarioAsync()
         {
             try
@@ -95,25 +172,32 @@ namespace acalderonFitPause.Views
                     {
                         _configuracion = lista[0];
                         _tiempoObjetivoMin = _configuracion.TiempoAlerta;
+                        _notificacionesActivas = _configuracion.NotificacionFlag;
+                        return;
                     }
                 }
+
+                // Sin configuración en BD, valores por defecto
+                _tiempoObjetivoMin = 45;
+                _notificacionesActivas = true;
             }
             catch
             {
+                // En caso de error, un valor seguro para pruebas
                 _tiempoObjetivoMin = 1;
+                _notificacionesActivas = true;
             }
         }
 
-        // ==========================================
-        // Metodo para el manejo del acelerometro
-        // ==========================================
-        private const double UMBRAL_MOVIMIENTO = 0.15;
+        #endregion
+
+        #region Manejo del acelerómetro
 
         private void leeAcelerometro(object sender, AccelerometerChangedEventArgs e)
         {
             var acc = e.Reading.Acceleration;
 
-            // Magnitud total de la aceleracion (en g)
+            // Magnitud total de la aceleración (en g)
             double magnitud = Math.Sqrt(
                 acc.X * acc.X +
                 acc.Y * acc.Y +
@@ -122,36 +206,39 @@ namespace acalderonFitPause.Views
             // Reposo ~ 1g. Si se aleja de 1 => movimiento
             bool hayMovimiento = Math.Abs(magnitud - 1.0) > UMBRAL_MOVIMIENTO;
 
-            if (hayMovimiento != _enMovimiento)
-            {
-                _enMovimiento = hayMovimiento;
+            // Sólo si cambia el estado, actualizamos UI
+            if (hayMovimiento == _enMovimiento)
+                return;
 
-                MainThread.BeginInvokeOnMainThread(() =>
+            _enMovimiento = hayMovimiento;
+
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                if (_enMovimiento)
                 {
-                    if (_enMovimiento)
-                    {
-                        lblEstadoSensor.Text = "Telefono en movimiento";
-                        frmEstadoSensor.BackgroundColor = Color.FromArgb("#FEF3C7");
-                        lblEstadoSensor.TextColor = Color.FromArgb("#F59E0B");
-                    }
-                    else
-                    {
-                        lblEstadoSensor.Text = "Telefono quieto";
-                        frmEstadoSensor.BackgroundColor = Color.FromArgb("#D1FAE5");
-                        lblEstadoSensor.TextColor = Color.FromArgb("#10B981");
-                    }
-                });
-            }
+                    lblEstadoSensor.Text = "Telefono en movimiento";
+                    frmEstadoSensor.BackgroundColor = Color.FromArgb("#FEF3C7");
+                    lblEstadoSensor.TextColor = Color.FromArgb("#F59E0B");
+                }
+                else
+                {
+                    lblEstadoSensor.Text = "Telefono quieto";
+                    frmEstadoSensor.BackgroundColor = Color.FromArgb("#D1FAE5");
+                    lblEstadoSensor.TextColor = Color.FromArgb("#10B981");
+                }
+            });
         }
 
-        // ==========================================
-        // TEMPORIZADOR (1 segundo)
-        // ==========================================
+        #endregion
+
+        #region Temporizador (cada 1 segundo)
+
         private void contTemporizador(object sender, EventArgs e)
         {
             if (!_monitorActivo)
                 return;
 
+            // Si se detecta movimiento, no contamos inactividad
             if (_enMovimiento)
             {
                 ActualizarPantalla();
@@ -160,41 +247,59 @@ namespace acalderonFitPause.Views
 
             _tiempoSinMovimientoSeg++;
 
-            int tiempoLimite = _tiempoObjetivoMin * 60;
+            int tiempoLimite = ObtenerTiempoLimite();
+
             if (_tiempoSinMovimientoSeg >= tiempoLimite)
             {
+                // Fijamos el contador en el límite y detenemos el monitor
                 _tiempoSinMovimientoSeg = tiempoLimite;
                 _temporizador.Stop();
 
-                var notification = new NotificationRequest
-                {
-                    NotificationId = 1,
-                    Title = "FitPause",
-                    Description = "Es hora de una pausa activa!",
-                    Schedule = new NotificationRequestSchedule
-                    {
-                        NotifyTime = DateTime.Now
-                    }
-                };
-
-                notification.Show();
+                EnviarNotificacionPausaActiva();
+                ActualizarTextoBotonMonitor();
             }
 
             ActualizarPantalla();
         }
 
-        // ==========================================
-        // ACTUALIZAR ELEMENTOS EN LA PANTALLA
-        // ==========================================
+        private void EnviarNotificacionPausaActiva()
+        {
+            if (!_notificacionesActivas)
+                return;
+
+            var notification = new NotificationRequest
+            {
+                NotificationId = 1,
+                Title = "FitPause",
+                Description = "Es hora de una pausa activa!",
+                Schedule = new NotificationRequestSchedule
+                {
+                    NotifyTime = DateTime.Now
+                }
+            };
+
+            notification.Show();
+        }
+
+        #endregion
+
+        #region Actualización de elementos en pantalla
+
         private void ActualizarPantalla()
         {
+            // En tu caso estás mostrando "min" aunque cuentes segundos,
+            // si luego quieres, aquí puedes cambiar a minutos reales.
             int minutos = _tiempoSinMovimientoSeg;
             lblTiempoSinMovimiento.Text = minutos + " min";
 
             var diff = DateTime.Now - _ultimaActividad;
             lblUltimaActividad.Text = "Hace " + (int)diff.TotalMinutes + " min";
 
-            double progreso = (double)_tiempoSinMovimientoSeg / (_tiempoObjetivoMin * 60);
+            int tiempoLimite = ObtenerTiempoLimite();
+            double progreso = tiempoLimite > 0
+                ? (double)_tiempoSinMovimientoSeg / tiempoLimite
+                : 0;
+
             progreso = Math.Clamp(progreso, 0, 1);
             pbProgreso.Progress = progreso;
 
@@ -209,7 +314,7 @@ namespace acalderonFitPause.Views
             else if (progreso < 0.5)
             {
                 color = Color.FromArgb("#10B981");
-                mensaje = "Todo bajo control";
+                mensaje = "Todo bien!";
             }
             else if (progreso < 1.0)
             {
@@ -240,23 +345,8 @@ namespace acalderonFitPause.Views
                 lblEstadoSensor.TextColor = Color.FromArgb("#6B7280");
             }
 
+            // Mostrar botón de pausa activa sólo cuando llegue al 100%
             btnIniciarPausaActiva.IsVisible = progreso >= 1.0;
-        }
-
-        // ==========================================
-        // BOTON PAUSAR / INICIAR MONITOR
-        // ==========================================
-        private void btnPausarIniciarMonitor_Clicked(object sender, EventArgs e)
-        {
-            _monitorActivo = !_monitorActivo;
-
-            if (_monitorActivo)
-                _temporizador.Start();
-            else
-                _temporizador.Stop();
-
-            ActualizarTextoBotonMonitor();
-            ActualizarPantalla();
         }
 
         private void ActualizarTextoBotonMonitor()
@@ -273,21 +363,36 @@ namespace acalderonFitPause.Views
             }
         }
 
-        // ==========================================
-        // INICIAR PAUSA ACTIVA
-        // ==========================================
-        private async void btnIniciarPausaActiva_Clicked(object sender, EventArgs e)
+        #endregion
+
+        #region Handlers de botones (monitor y navegación)
+
+        private void btnPausarIniciarMonitor_Clicked(object sender, EventArgs e)
         {
-            await DisplayAlert("Pausa activa", "Aqui empieza la pausa activa.", "OK");
+            _monitorActivo = !_monitorActivo;
 
-            _tiempoSinMovimientoSeg = 0;
-            _ultimaActividad = DateTime.Now;
-
-            _monitorActivo = true;
-            _temporizador.Start();
+            if (_monitorActivo)
+                _temporizador.Start();
+            else
+                _temporizador.Stop();
 
             ActualizarTextoBotonMonitor();
             ActualizarPantalla();
+        }
+
+        private async void btnIniciarPausaActiva_Clicked(object sender, EventArgs e)
+        {
+           await Navigation.PushAsync(new vEjercicio(_usuario));
+            //await DisplayAlert("Pausa activa", "Aqui empieza la pausa activa.", "OK");
+
+            //_tiempoSinMovimientoSeg = 0;
+            //_ultimaActividad = DateTime.Now;
+
+            //_monitorActivo = true;
+            //_temporizador.Start();
+
+            //ActualizarTextoBotonMonitor();
+            //ActualizarPantalla();
         }
 
         private void btnAtras_Clicked(object sender, EventArgs e)
@@ -295,9 +400,10 @@ namespace acalderonFitPause.Views
             Navigation.PopAsync();
         }
 
-        // ==========================================
-        // MENU INFERIOR
-        // ==========================================
+        #endregion
+
+        #region Menú inferior
+
         private void MarcarMenuSeleccionado(string opcion)
         {
             btnMenuInicio.TextColor = Color.FromArgb("#6B7280");
@@ -307,10 +413,18 @@ namespace acalderonFitPause.Views
 
             switch (opcion)
             {
-                case "Inicio": btnMenuInicio.TextColor = Color.FromArgb("#2563FF"); break;
-                case "Monitor": btnMenuMonitor.TextColor = Color.FromArgb("#2563FF"); break;
-                case "Historial": btnMenuHistorial.TextColor = Color.FromArgb("#2563FF"); break;
-                case "Ajustes": btnMenuAjustes.TextColor = Color.FromArgb("#2563FF"); break;
+                case "Inicio":
+                    btnMenuInicio.TextColor = Color.FromArgb("#2563FF");
+                    break;
+                case "Monitor":
+                    btnMenuMonitor.TextColor = Color.FromArgb("#2563FF");
+                    break;
+                case "Historial":
+                    btnMenuHistorial.TextColor = Color.FromArgb("#2563FF");
+                    break;
+                case "Ajustes":
+                    btnMenuAjustes.TextColor = Color.FromArgb("#2563FF");
+                    break;
             }
         }
 
@@ -326,10 +440,16 @@ namespace acalderonFitPause.Views
 
         private async void btnMenuHistorial_Clicked(object sender, EventArgs e)
         {
+            MarcarMenuSeleccionado("Historial");
+            await Navigation.PushAsync(new vHistorial(_usuario));
         }
 
         private async void btnMenuAjustes_Clicked(object sender, EventArgs e)
         {
+            MarcarMenuSeleccionado("Ajustes");
+            await Navigation.PushAsync(new vConfiguracion(_usuario));
         }
+
+        #endregion
     }
 }

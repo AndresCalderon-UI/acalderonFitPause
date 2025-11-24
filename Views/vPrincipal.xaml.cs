@@ -7,7 +7,7 @@ namespace acalderonFitPause.Views;
 
 public partial class vPrincipal : ContentPage
 {
-    private readonly Usuario _usuario;                 // NO se toca este modelo
+    private readonly Usuario _usuario;
     private ConfiguracionUsuario _configuracion;
     private ResumenDiario _resumenDiario;
 
@@ -17,7 +17,7 @@ public partial class vPrincipal : ContentPage
 
         _usuario = usuario;
 
-        // Mostrar nombre apenas carga
+        // Mostrar nombre apenas se carga
         lblNombreUsuario.Text = _usuario?.Nombre ?? "Usuario";
     }
 
@@ -25,7 +25,6 @@ public partial class vPrincipal : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-
         await CargarDatosDesdeServidorAsync();
     }
 
@@ -61,9 +60,8 @@ public partial class vPrincipal : ContentPage
             _configuracion = new ConfiguracionUsuario
             {
                 UsuarioId = _usuario.Id,
-                TiempoAlerta = 45,
-                NotificacionesActivas = true,
-                Tema = "Claro"
+                TiempoAlerta = 45//,
+                //NotificacionesActivas = true,
             };
             return;
         }
@@ -76,9 +74,8 @@ public partial class vPrincipal : ContentPage
             _configuracion = new ConfiguracionUsuario
             {
                 UsuarioId = _usuario.Id,
-                TiempoAlerta = 45,
-                NotificacionesActivas = true,
-                Tema = "Claro"
+                TiempoAlerta = 45//,
+                //NotificacionesActivas = true,
             };
         }
         else
@@ -249,8 +246,6 @@ public partial class vPrincipal : ContentPage
         return $"Hace {horas} hora{(horas > 1 ? "s" : "")} · {duracionMinutos} min";
     }
 
-    // ========= Menú y botones (igual que antes) =========
-
     private void MarcarMenuSeleccionado(string opcion)
     {
         btnMenuInicio.TextColor = Color.FromArgb("#6B7280");
@@ -271,11 +266,6 @@ public partial class vPrincipal : ContentPage
         }
     }
 
-    private void btnPerfil_Clicked(object sender, EventArgs e)
-    {
-        Navigation.PushAsync(new vPerfil());
-    }
-
     private void btnVerDetalle_Clicked(object sender, EventArgs e)
     {
         Navigation.PushAsync(new vMonitor(_usuario));
@@ -283,12 +273,12 @@ public partial class vPrincipal : ContentPage
 
     private void btnEjercicios_Clicked(object sender, EventArgs e)
     {
-        //Navigation.PushAsync(new vEjercicios());
+        Navigation.PushAsync(new vEjercicio(_usuario));
     }
 
     private void btnHistorial_Clicked(object sender, EventArgs e)
     {
-        //Navigation.PushAsync(new vHistorial());
+        Navigation.PushAsync(new vHistorial(_usuario));
     }
 
     private void btnMenuInicio_Clicked(object sender, EventArgs e)
@@ -305,12 +295,12 @@ public partial class vPrincipal : ContentPage
     private void btnMenuHistorial_Clicked(object sender, EventArgs e)
     {
         MarcarMenuSeleccionado("Historial");
-        //Navigation.PushAsync(new vHistorial());
+        Navigation.PushAsync(new vHistorial(_usuario));
     }
 
     private void btnMenuAjustes_Clicked(object sender, EventArgs e)
     {
         MarcarMenuSeleccionado("Ajustes");
-        //Navigation.PushAsync(new vAjustes());
+        Navigation.PushAsync(new vConfiguracion(_usuario));
     }
 }
