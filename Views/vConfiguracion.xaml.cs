@@ -70,11 +70,18 @@ namespace acalderonFitPause.Views
                     // Meta diaria
                     sldMeta.Value = config.Meta;
                     lblMetaValor.Text = config.Meta.ToString();
+
+                    // NUEVO: Sensibilidad (LimiteMovimiento)
+                    double limite = config.LimiteMovimiento;
+                    int indiceSens = ObtenerIndiceSensibilidadDesdeLimite(limite);
+                    pkSensibilidad.SelectedIndex = indiceSens;
+                    ActualizarTextoSensibilidad(indiceSens);
                 }
                 else
                 {
                     EstablecerValoresPorDefecto();
                 }
+
             }
             catch
             {
@@ -89,12 +96,16 @@ namespace acalderonFitPause.Views
         {
             swNotificaciones.IsToggled = true;
 
-            pkIntervalo.SelectedIndex = 1; // 45 min
+            pkIntervalo.SelectedIndex = 1;
             ActualizarTextoIntervalo(45);
 
             sldMeta.Value = 6;
             lblMetaValor.Text = "6";
+
+            pkSensibilidad.SelectedIndex = 1;
+            ActualizarTextoSensibilidad(1);
         }
+
 
         // ====================== LOGICA DE CONTROLES ======================
 
@@ -108,6 +119,51 @@ namespace acalderonFitPause.Views
                 case 3: return 90;
                 default: return 45;
             }
+        }
+
+        private double ObtenerLimiteMovimientoSeleccionado()
+        {
+            switch (pkSensibilidad.SelectedIndex)
+            {
+                case 0: return 0.08; // Alta
+                case 1: return 0.15; // Media
+                case 2: return 0.25; // Baja
+                default: return 0.15;
+            }
+        }
+
+        // Dado un valor desde BD, decide qué índice usar en el Picker
+        private int ObtenerIndiceSensibilidadDesdeLimite(double limite)
+        {
+            if (limite <= 0.10) return 0; // Alta
+            if (limite >= 0.20) return 2; // Baja
+            return 1;                     // Media por defecto
+        }
+
+        private void ActualizarTextoSensibilidad(int indice)
+        {
+            switch (indice)
+            {
+                case 0:
+                    lblTextoSensibilidad.Text = "Alta: paarma movimientos pequeños del telefono";
+                    break;
+                case 1:
+                    lblTextoSensibilidad.Text = "Media: para un uso normal";
+                    break;
+                case 2:
+                    lblTextoSensibilidad.Text = "Baja: para movimientos fuertes";
+                    break;
+                default:
+                    lblTextoSensibilidad.Text = "La sensibilidad media funciona para la mayoria";
+                    break;
+            }
+        }
+
+        // Evento del Picker
+        private void pkSensibilidad_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int indice = pkSensibilidad.SelectedIndex;
+            ActualizarTextoSensibilidad(indice);
         }
 
         private void ActualizarTextoIntervalo(int minutos)
@@ -135,14 +191,15 @@ namespace acalderonFitPause.Views
             try
             {
                 int minutos = ObtenerMinutosSeleccionados();
+                double limiteMovimiento = ObtenerLimiteMovimientoSeleccionado();
                 int meta = (int)Math.Round(sldMeta.Value);
 
-                // Payload limpio sin Id
-                var payload = new
+                var ins_act = new
                 {
                     UsuarioId = _usuarioId,
                     TiempoAlerta = minutos,
                     NotificacionFlag = swNotificaciones.IsToggled,
+                    LimiteMovimiento = limiteMovimiento,
                     Meta = meta
                 };
 
@@ -167,14 +224,14 @@ namespace acalderonFitPause.Views
                         respuestaGuardar = await servicioSupabase.ActualizarAsync(
                             configSupabase.tblConfiguracion,
                             filtroActualizar,
-                            payload);
+                            ins_act);
                     }
                     else
                     {
                         // No existe: INSERT
                         respuestaGuardar = await servicioSupabase.InsertarAsync(
                             configSupabase.tblConfiguracion,
-                            payload);
+                            ins_act);
                     }
                 }
                 else
@@ -182,7 +239,7 @@ namespace acalderonFitPause.Views
                     // Consulta fallo: intentar insert
                     respuestaGuardar = await servicioSupabase.InsertarAsync(
                         configSupabase.tblConfiguracion,
-                        payload);
+                        ins_act);
                 }
 
                 if (respuestaGuardar.IsSuccessStatusCode)
@@ -230,6 +287,7 @@ namespace acalderonFitPause.Views
         {
             btnMenuInicio.TextColor = Color.FromArgb("#6B7280");
             btnMenuMonitor.TextColor = Color.FromArgb("#6B7280");
+            btnMenuEjercicio.TextColor = Color.FromArgb("#6B7280");
             btnMenuHistorial.TextColor = Color.FromArgb("#6B7280");
             btnMenuAjustes.TextColor = Color.FromArgb("#6B7280");
 
@@ -240,6 +298,9 @@ namespace acalderonFitPause.Views
                     break;
                 case "Monitor":
                     btnMenuMonitor.TextColor = Color.FromArgb("#2563FF");
+                    break;
+                case "Ejercicio":
+                    btnMenuEjercicio.TextColor = Color.FromArgb("#2563FF");
                     break;
                 case "Historial":
                     btnMenuHistorial.TextColor = Color.FromArgb("#2563FF");
@@ -260,6 +321,11 @@ namespace acalderonFitPause.Views
         {
             MarcarMenuSeleccionado("Monitor");
             await Navigation.PushAsync(new vMonitor(_usuario));
+        }
+
+        private async void btnMenuEjercicio_Clicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new vEjercicio(_usuario));
         }
 
         private async void btnMenuHistorial_Clicked(object sender, EventArgs e)

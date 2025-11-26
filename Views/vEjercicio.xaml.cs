@@ -171,5 +171,61 @@ namespace acalderonFitPause.Views
         {
             await Navigation.PopAsync();
         }
+
+        private void MarcarMenuSeleccionado(string opcion)
+        {
+            btnMenuInicio.TextColor = Color.FromArgb("#6B7280");
+            btnMenuMonitor.TextColor = Color.FromArgb("#6B7280");
+            btnMenuEjercicio.TextColor = Color.FromArgb("#6B7280");
+            btnMenuHistorial.TextColor = Color.FromArgb("#6B7280");
+            btnMenuAjustes.TextColor = Color.FromArgb("#6B7280");
+
+            switch (opcion)
+            {
+                case "Inicio":
+                    btnMenuInicio.TextColor = Color.FromArgb("#2563FF");
+                    break;
+                case "Monitor":
+                    btnMenuMonitor.TextColor = Color.FromArgb("#2563FF");
+                    break;
+                case "Ejercicio":
+                    btnMenuEjercicio.TextColor = Color.FromArgb("#2563FF");
+                    break;
+                case "Historial":
+                    btnMenuHistorial.TextColor = Color.FromArgb("#2563FF");
+                    break;
+                case "Ajustes":
+                    btnMenuAjustes.TextColor = Color.FromArgb("#2563FF");
+                    break;
+            }
+        }
+
+        private async void btnMenuInicio_Clicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new vPrincipal(_usuario));
+        }
+
+        private async void btnMenuMonitor_Clicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new vMonitor(_usuario));
+        }
+
+        private async void btnMenuEjercicio_Clicked(object sender, EventArgs e)
+        {
+            MarcarMenuSeleccionado("Ejercicio");
+        }
+
+        private async void btnMenuHistorial_Clicked(object sender, EventArgs e)
+        {
+            MarcarMenuSeleccionado("Historial");
+            await Navigation.PushAsync(new vHistorial(_usuario));
+        }
+
+        private async void btnMenuAjustes_Clicked(object sender, EventArgs e)
+        {
+            MarcarMenuSeleccionado("Ajustes");
+            await Navigation.PushAsync(new vConfiguracion(_usuario));
+        }
+
     }
 }

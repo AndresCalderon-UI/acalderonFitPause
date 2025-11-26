@@ -8,45 +8,38 @@ namespace acalderonFitPause.Views
 {
     public partial class vMonitor : ContentPage
     {
-        #region Constantes
 
-        // Umbral para detectar movimiento a partir del acelerómetro
-        private const double UMBRAL_MOVIMIENTO = 0.15;
+        private static double _limiteDeMovimiento = 0.15;
 
-        #endregion
-
-        #region Estado estático compartido (entre todas las vMonitor)
 
         private static bool _monitorActivo = true;
-        private static int _tiempoSinMovimientoSeg = 0;      // contador REAL en segundos
-        private static int _tiempoObjetivoMin = 1;           // meta (en minutos)
+        private static int _tiempoSinMovimientoSeg = 0;
+        private static int _tiempoObjetivoMin = 45;
         private static DateTime _ultimaActividad = DateTime.Now;
         private static bool _estadoInicializado = false;
         private static bool _enMovimiento = false;
-
-        // Referencia a la instancia activa (para métodos estáticos)
         private static vMonitor _instanciaActiva;
 
-        private const bool MODO_PRUEBAS_SEGUNDOS = true;
+        private const bool modoPruebas = true;
 
         private static int ObtenerTiempoLimite()
         {
-            // En modo pruebas: el valor de _tiempoObjetivoMin se toma como segundos.
-            // En modo "real": se toma como minutos -> minutos * 60.
-            return MODO_PRUEBAS_SEGUNDOS
-                ? _tiempoObjetivoMin
-                : _tiempoObjetivoMin * 60;
+            if (modoPruebas)
+            {
+                return _tiempoObjetivoMin;
+            }
+            else
+            {
+                return _tiempoObjetivoMin * 60;
+            }
         }
 
-
-        #endregion
 
         #region Campos de instancia
 
         private readonly IDispatcherTimer _temporizador;
         private readonly Usuario _usuario;
         private ConfiguracionUsuario _configuracion;
-
         private bool _notificacionesActivas = true;
 
         #endregion
@@ -76,7 +69,7 @@ namespace acalderonFitPause.Views
 
             _monitorActivo = true;
             _tiempoSinMovimientoSeg = 0;
-            _tiempoObjetivoMin = 1;
+            _tiempoObjetivoMin = 45;
             _ultimaActividad = DateTime.Now;
             _estadoInicializado = true;
         }
@@ -173,6 +166,12 @@ namespace acalderonFitPause.Views
                         _configuracion = lista[0];
                         _tiempoObjetivoMin = _configuracion.TiempoAlerta;
                         _notificacionesActivas = _configuracion.NotificacionFlag;
+                        
+                        if (_configuracion.LimiteMovimiento > 0)
+                            _limiteDeMovimiento = _configuracion.LimiteMovimiento;
+                        else
+                            _limiteDeMovimiento = 0.15;
+
                         return;
                     }
                 }
@@ -180,12 +179,14 @@ namespace acalderonFitPause.Views
                 // Sin configuración en BD, valores por defecto
                 _tiempoObjetivoMin = 45;
                 _notificacionesActivas = true;
+                _limiteDeMovimiento = 0.15;
             }
             catch
             {
                 // En caso de error, un valor seguro para pruebas
-                _tiempoObjetivoMin = 1;
+                _tiempoObjetivoMin = 45;
                 _notificacionesActivas = true;
+                _limiteDeMovimiento = 0.15;
             }
         }
 
@@ -195,22 +196,22 @@ namespace acalderonFitPause.Views
 
         private void leeAcelerometro(object sender, AccelerometerChangedEventArgs e)
         {
-            var acc = e.Reading.Acceleration;
+            var eje = e.Reading.Acceleration;
 
-            // Magnitud total de la aceleración (en g)
-            double magnitud = Math.Sqrt(
-                acc.X * acc.X +
-                acc.Y * acc.Y +
-                acc.Z * acc.Z);
+            // Se mide el total de la aceleración
+            double fuerzaAceleracion = Math.Sqrt(
+                eje.X * eje.X +
+                eje.Y * eje.Y +
+                eje.Z * eje.Z);
 
             // Reposo ~ 1g. Si se aleja de 1 => movimiento
-            bool hayMovimiento = Math.Abs(magnitud - 1.0) > UMBRAL_MOVIMIENTO;
+            bool actividad = Math.Abs(fuerzaAceleracion - 1.0) > _limiteDeMovimiento;
 
             // Sólo si cambia el estado, actualizamos UI
-            if (hayMovimiento == _enMovimiento)
+            if (actividad == _enMovimiento)
                 return;
 
-            _enMovimiento = hayMovimiento;
+            _enMovimiento = actividad;
 
             MainThread.BeginInvokeOnMainThread(() =>
             {
@@ -295,12 +296,39 @@ namespace acalderonFitPause.Views
             var diff = DateTime.Now - _ultimaActividad;
             lblUltimaActividad.Text = "Hace " + (int)diff.TotalMinutes + " min";
 
-            int tiempoLimite = ObtenerTiempoLimite();
-            double progreso = tiempoLimite > 0
-                ? (double)_tiempoSinMovimientoSeg / tiempoLimite
-                : 0;
+            //int tiempoLimite = ObtenerTiempoLimite();
+            //double progreso = tiempoLimite > 0
+            //    ? (double)_tiempoSinMovimientoSeg / tiempoLimite
+            //    : 0;
 
-            progreso = Math.Clamp(progreso, 0, 1);
+            //progreso = Math.Clamp(progreso, 0, 1);
+            int tiempoLimite = ObtenerTiempoLimite();
+
+            double progreso;
+
+            if (tiempoLimite > 0)
+            {
+                progreso = Convert.ToDouble(_tiempoSinMovimientoSeg) / tiempoLimite;
+
+            }
+            else
+            {
+                progreso = 0;
+            }
+
+            // 2. Limitar el valor entre 0 y 1
+            if (progreso < 0)
+            {
+                progreso = 0;
+            }
+            else if (progreso > 1)
+            {
+                progreso = 1;
+            }
+
+            // 3. Asignar a la barra de progreso
+            pbProgreso.Progress = progreso;
+
             pbProgreso.Progress = progreso;
 
             Color color;
@@ -332,7 +360,7 @@ namespace acalderonFitPause.Views
             lblMensajeEstado.TextColor = color;
             pbProgreso.ProgressColor = color;
 
-            if (_monitorActivo)
+            if (_monitorActivo)//hacer la prueba con el estado del monitor
             {
                 frmEstadoSensor.BackgroundColor = Color.FromArgb("#D1FAE5");
                 lblEstadoSensor.Text = "Activo";
@@ -383,7 +411,6 @@ namespace acalderonFitPause.Views
         private async void btnIniciarPausaActiva_Clicked(object sender, EventArgs e)
         {
            await Navigation.PushAsync(new vEjercicio(_usuario));
-            //await DisplayAlert("Pausa activa", "Aqui empieza la pausa activa.", "OK");
 
             //_tiempoSinMovimientoSeg = 0;
             //_ultimaActividad = DateTime.Now;
@@ -408,6 +435,7 @@ namespace acalderonFitPause.Views
         {
             btnMenuInicio.TextColor = Color.FromArgb("#6B7280");
             btnMenuMonitor.TextColor = Color.FromArgb("#6B7280");
+            btnMenuEjercicio.TextColor = Color.FromArgb("#6B7280");
             btnMenuHistorial.TextColor = Color.FromArgb("#6B7280");
             btnMenuAjustes.TextColor = Color.FromArgb("#6B7280");
 
@@ -418,6 +446,9 @@ namespace acalderonFitPause.Views
                     break;
                 case "Monitor":
                     btnMenuMonitor.TextColor = Color.FromArgb("#2563FF");
+                    break;
+                case "Ejercicio":
+                    btnMenuEjercicio.TextColor = Color.FromArgb("#2563FF");
                     break;
                 case "Historial":
                     btnMenuHistorial.TextColor = Color.FromArgb("#2563FF");
@@ -438,6 +469,10 @@ namespace acalderonFitPause.Views
             MarcarMenuSeleccionado("Monitor");
         }
 
+        private async void btnMenuEjercicio_Clicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new vEjercicio(_usuario));
+        }
         private async void btnMenuHistorial_Clicked(object sender, EventArgs e)
         {
             MarcarMenuSeleccionado("Historial");

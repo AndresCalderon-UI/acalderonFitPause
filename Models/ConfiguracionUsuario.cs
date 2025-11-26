@@ -13,6 +13,7 @@ namespace acalderonFitPause.Models
         public int TiempoAlerta { get; set; }
         public bool NotificacionFlag { get; set; }
         public int Meta { get; set; }
+        public double LimiteMovimiento { get; set; }
     }
 }
 

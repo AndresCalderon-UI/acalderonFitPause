@@ -262,7 +262,7 @@
                 Stroke="#E5E7EB"
                 StrokeThickness="1">
             <HorizontalStackLayout Padding="20,8"
-                                   Spacing="30"
+                                   Spacing="5"
                                    HorizontalOptions="Center"
                                    VerticalOptions="Center">
 
@@ -279,6 +279,13 @@
                         BackgroundColor="Transparent"
                         TextColor="#6B7280"
                         Clicked="btnMenuMonitor_Clicked"/>
+
+                <Button x:Name="btnMenuEjercicio"
+                        Text="Ejercicios"
+                        FontSize="12"
+                        BackgroundColor="Transparent"
+                        TextColor="#6B7280"
+                        Clicked="btnMenuEjercicio_Clicked"/>
 
                 <Button x:Name="btnMenuHistorial"
                         Text="Historial"

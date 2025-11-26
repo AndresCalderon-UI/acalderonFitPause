@@ -6,17 +6,13 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <!-- Contenido scrolleable -->
             <RowDefinition Height="*"/>
-            <!-- Menú inferior -->
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- CONTENIDO SCROLL -->
         <ScrollView Grid.Row="0">
             <VerticalStackLayout Padding="0">
 
-                <!-- ENCABEZADO -->
                 <Grid BackgroundColor="#2563FF" Padding="0,0,0,0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="60"/>
@@ -29,7 +25,7 @@
                     <ImageButton x:Name="btnRegresar"
                                  Grid.Row="0"
                                  Grid.Column="0"
-                                 Margin="10,18,0,18"
+                                 Margin="10,8,0,18"
                                  WidthRequest="24"
                                  HeightRequest="24"
                                  BackgroundColor="Transparent"
@@ -47,10 +43,8 @@
                            FontSize="22"/>
                 </Grid>
 
-                <!-- CONTENIDO -->
                 <VerticalStackLayout Padding="20,20,20,20" Spacing="20">
 
-                    <!-- TARJETA NOTIFICACIONES -->
                     <Frame Padding="16"
                            HasShadow="False"
                            CornerRadius="12"
@@ -59,7 +53,6 @@
 
                         <VerticalStackLayout Spacing="16">
 
-                            <!-- TITULO NOTIFICACIONES -->
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="24"/>
@@ -73,7 +66,7 @@
                                        Grid.Column="0"
                                        WidthRequest="20"
                                        HeightRequest="20"
-                                       Source="icono_campana.png"/>
+                                       Source="notificacion_incono.png"/>
 
                                 <Label x:Name="lblNotificaciones"
                                        Grid.Row="0"
@@ -84,7 +77,6 @@
                                        TextColor="#111827"/>
                             </Grid>
 
-                            <!-- ACTIVAR NOTIFICACIONES -->
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="40"/>
@@ -115,7 +107,6 @@
                         </VerticalStackLayout>
                     </Frame>
 
-                    <!-- TARJETA CONFIGURACION ACTIVIDAD -->
                     <Frame Padding="16"
                            HasShadow="False"
                            CornerRadius="12"
@@ -124,7 +115,6 @@
 
                         <VerticalStackLayout Spacing="16">
 
-                            <!-- TITULO CONFIGURACION ACTIVIDAD -->
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="24"/>
@@ -138,7 +128,7 @@
                                        Grid.Column="0"
                                        WidthRequest="20"
                                        HeightRequest="20"
-                                       Source="icono_reloj.png"/>
+                                       Source="confact_incono.png"/>
 
                                 <Label x:Name="lblConfiguracionActividad"
                                        Grid.Row="0"
@@ -149,7 +139,6 @@
                                        TextColor="#111827"/>
                             </Grid>
 
-                            <!-- INTERVALO RECORDATORIO -->
                             <VerticalStackLayout Spacing="8">
 
                                 <Label x:Name="lblIntervalo"
@@ -171,6 +160,29 @@
                                        FontSize="12"
                                        TextColor="#6B7280"
                                        Text="Recibiras un recordatorio cada 45 minutos de inactividad"/>
+                            </VerticalStackLayout>
+
+                            <!-- SENSIBILIDAD DEL SENSOR -->
+                            <VerticalStackLayout Spacing="8">
+
+                                <Label x:Name="lblSensibilidad"
+                                       Text="Sensibilidad del sensor"
+                                       TextColor="#111827"/>
+
+                                <Picker x:Name="pkSensibilidad"
+                                        Title="Seleccione sensibilidad"
+                                        SelectedIndexChanged="pkSensibilidad_SelectedIndexChanged">
+                                    <Picker.Items>
+                                        <x:String>Alta (detecta movimientos pequeños)</x:String>
+                                        <x:String>Media (recomendado)</x:String>
+                                        <x:String>Baja (solo movimientos fuertes)</x:String>
+                                    </Picker.Items>
+                                </Picker>
+
+                                <Label x:Name="lblTextoSensibilidad"
+                                       FontSize="12"
+                                       TextColor="#6B7280"
+                                       Text="La sensibilidad media funciona bien para la mayoría de usuarios."/>
                             </VerticalStackLayout>
 
                             <!-- META DIARIA -->
@@ -240,7 +252,7 @@
                 Stroke="#E5E7EB"
                 StrokeThickness="1">
             <HorizontalStackLayout Padding="20,8"
-                                   Spacing="30"
+                                   Spacing="5"
                                    HorizontalOptions="Center"
                                    VerticalOptions="Center">
 
@@ -257,6 +269,13 @@
                         BackgroundColor="Transparent"
                         TextColor="#6B7280"
                         Clicked="btnMenuMonitor_Clicked"/>
+
+                <Button x:Name="btnMenuEjercicio"
+                        Text="Ejercicios"
+                        FontSize="12"
+                        BackgroundColor="Transparent"
+                        TextColor="#6B7280"
+                        Clicked="btnMenuEjercicio_Clicked"/>
 
                 <Button x:Name="btnMenuHistorial"
                         Text="Historial"

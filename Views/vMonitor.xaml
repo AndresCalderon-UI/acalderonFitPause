@@ -4,7 +4,15 @@
              x:Class="acalderonFitPause.Views.vMonitor"
              Title="Monitor de Actividad">
 
-    <Grid RowDefinitions="*,Auto" BackgroundColor="#F3F4F6">
+    <Grid BackgroundColor="#F3F4F6">
+
+        <!-- DEFINICIONES DE FILAS -->
+        <Grid.RowDefinitions>
+            <!-- Contenido principal ocupa el espacio disponible -->
+            <RowDefinition Height="*" />
+            <!-- Menú inferior con altura fija -->
+            <RowDefinition Height="80" />
+        </Grid.RowDefinitions>
 
         <!-- CONTENIDO PRINCIPAL -->
         <ScrollView Grid.Row="0">
@@ -14,7 +22,8 @@
                 <Grid BackgroundColor="#2563FF" Padding="20">
                     <HorizontalStackLayout Spacing="15">
                         <ImageButton x:Name="btnAtras"
-                                     Source="back_icon.png" 
+                                     BackgroundColor="Transparent"
+                                     Source="regresar_icono.png" 
                                      WidthRequest="24"
                                      HeightRequest="24"
                                      Clicked="btnAtras_Clicked"/>
@@ -29,25 +38,26 @@
                 <VerticalStackLayout Padding="20" Spacing="20">
 
                     <!-- Status Card -->
-                    <Frame BorderColor="#BFDBFE"
-                           BackgroundColor="White"
-                           CornerRadius="16"
-                           Padding="24"
-                           HasShadow="False">
+                    <Border Stroke="#BFDBFE"
+                            StrokeThickness="1"
+                            Background="White"
+                            StrokeShape="RoundRectangle 16"
+                            Padding="24">
 
                         <VerticalStackLayout Spacing="20" HorizontalOptions="Center">
 
                             <!-- Icono -->
-                            <Frame CornerRadius="60" 
-                                   WidthRequest="120" 
-                                   HeightRequest="120"
-                                   BackgroundColor="#EBF5FF"
-                                   Padding="30"
-                                   HasShadow="False"
-                                   HorizontalOptions="Center">
-                                <Image Source="activity_icon.png" 
+                            <Border Stroke="#EBF5FF"
+                                    StrokeThickness="1"
+                                    Background="#dfeaed"
+                                    StrokeShape="RoundRectangle 60"
+                                    Padding="30"
+                                    WidthRequest="120"
+                                    HeightRequest="120"
+                                    HorizontalOptions="Center">
+                                <Image Source="monitor.png"
                                        Aspect="AspectFit"/>
-                            </Frame>
+                            </Border>
 
                             <!-- Tiempo sin movimiento -->
                             <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
@@ -81,7 +91,7 @@
                                    FontSize="16"
                                    HorizontalTextAlignment="Center"/>
                         </VerticalStackLayout>
-                    </Frame>
+                    </Border>
 
                     <!-- Botón Pausar/Iniciar monitor -->
                     <Button x:Name="btnPausarIniciarMonitor"
@@ -93,33 +103,44 @@
                             Clicked="btnPausarIniciarMonitor_Clicked"/>
 
                     <!-- Tarjeta estado del sensor -->
-                    <Frame BorderColor="#E5E7EB"
-                           BackgroundColor="White"
-                           CornerRadius="12"
-                           Padding="16"
-                           HasShadow="False">
+                    <Border Stroke="#E5E7EB"
+                            StrokeThickness="1"
+                            Background="White"
+                            StrokeShape="RoundRectangle 12"
+                            Padding="16">
 
                         <VerticalStackLayout Spacing="12">
                             <Label Text="Estado del Sensor" 
                                    TextColor="#111827"
                                    FontSize="16"/>
 
-                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
+                            <Grid RowSpacing="8">
+                                <!-- DEFINICIONES EXPLÍCITAS DE GRID -->
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="30" />
+                                    <RowDefinition Height="30" />
+                                    <RowDefinition Height="30" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="200" />
+                                    <ColumnDefinition Width="120" />
+                                </Grid.ColumnDefinitions>
+
                                 <Label Grid.Row="0" Grid.Column="0"
                                        Text="Acelerómetro" 
                                        TextColor="#6B7280"/>
 
-                                <Frame Grid.Row="0" Grid.Column="1"
-                                       x:Name="frmEstadoSensor"
-                                       BackgroundColor="#D1FAE5"
-                                       CornerRadius="12"
-                                       Padding="8,4"
-                                       HasShadow="False">
+                                <Border Grid.Row="0" Grid.Column="1"
+                                        x:Name="frmEstadoSensor"
+                                        StrokeThickness="0"
+                                        Background="#D1FAE5"
+                                        StrokeShape="RoundRectangle 12"
+                                        Padding="8,4">
                                     <Label x:Name="lblEstadoSensor"
                                            Text="Activo" 
                                            TextColor="#10B981"
                                            FontSize="12"/>
-                                </Frame>
+                                </Border>
 
                                 <Label Grid.Row="1" Grid.Column="0"
                                        Text="Detección" 
@@ -137,7 +158,7 @@
                                        TextColor="#111827"/>
                             </Grid>
                         </VerticalStackLayout>
-                    </Frame>
+                    </Border>
 
                     <!-- Botón para iniciar pausa activa -->
                     <Button x:Name="btnIniciarPausaActiva"
@@ -150,11 +171,11 @@
                             Clicked="btnIniciarPausaActiva_Clicked"/>
 
                     <!-- Consejo -->
-                    <Frame BackgroundColor="#EBF5FF"
-                           BorderColor="#BFDBFE"
-                           CornerRadius="12"
-                           Padding="16"
-                           HasShadow="False">
+                    <Border Background="#EBF5FF"
+                            Stroke="#BFDBFE"
+                            StrokeThickness="1"
+                            StrokeShape="RoundRectangle 12"
+                            Padding="16">
                         <VerticalStackLayout Spacing="8">
                             <Label Text="💡 Consejo" 
                                    TextColor="#1E40AF"
@@ -163,7 +184,7 @@
                                    TextColor="#1E40AF"
                                    FontSize="14"/>
                         </VerticalStackLayout>
-                    </Frame>
+                    </Border>
 
                 </VerticalStackLayout>
             </VerticalStackLayout>
@@ -175,7 +196,7 @@
                 Stroke="#E5E7EB"
                 StrokeThickness="1">
             <HorizontalStackLayout Padding="20,8"
-                                   Spacing="30"
+                                   Spacing="5"
                                    HorizontalOptions="Center"
                                    VerticalOptions="Center">
 
@@ -192,6 +213,13 @@
                         BackgroundColor="Transparent"
                         TextColor="#2563FF"
                         Clicked="btnMenuMonitor_Clicked"/>
+
+                <Button x:Name="btnMenuEjercicio"
+                        Text="Ejercicios"
+                        FontSize="12"
+                        BackgroundColor="Transparent"
+                        TextColor="#6B7280"
+                        Clicked="btnMenuEjercicio_Clicked"/>
 
                 <Button x:Name="btnMenuHistorial"
                         Text="Historial"

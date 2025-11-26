@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="acalderonFitPause.Views.vPrincipal"
-             Title="Inicio">
+             Title="Principal">
 
     <!-- Grid para contenido + menú inferior fijo -->
     <Grid RowDefinitions="*,Auto" BackgroundColor="#F3F4F6">
@@ -56,7 +56,7 @@
                                     StrokeThickness="0"
                                     StrokeShape="RoundRectangle 12"
                                     Padding="12">
-                                <Image Source="activity_icon.png" 
+                                <Image Source="upa_icono.png" 
                                        WidthRequest="24"
                                        HeightRequest="24"/>
                             </Border>
@@ -65,7 +65,7 @@
                             <VerticalStackLayout Grid.Column="1" 
                                                  VerticalOptions="Center"
                                                  Spacing="2">
-                                <Label Text="Tiempo sin movimiento" 
+                                <Label Text="Tiempo límite de inactividad" 
                                        TextColor="#6B7280"
                                        FontSize="14"/>
                                 <Label x:Name="lblTiempoSinMovimiento"
@@ -149,7 +149,7 @@
                                        Text="0"
                                        TextColor="#111827"
                                        FontSize="30"/>
-                                <Label Text="días" 
+                                <Label Text="pausas" 
                                        TextColor="#6B7280"
                                        FontSize="12"/>
                             </VerticalStackLayout>
@@ -219,14 +219,6 @@
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
 
-                                <Border Grid.Column="0"
-                                        Background="#EBF5FF"
-                                        StrokeThickness="0"
-                                        StrokeShape="RoundRectangle 12"
-                                        Padding="12">
-                                    <!-- Podrías poner aquí un icono de ejercicio -->
-                                </Border>
-
                                 <VerticalStackLayout Grid.Column="1" 
                                                      VerticalOptions="Center"
                                                      Spacing="4">
@@ -259,7 +251,7 @@
                                 TextColor="#374151"
                                 CornerRadius="12"
                                 HeightRequest="80"
-                                Clicked="btnEjercicios_Clicked">
+                                Clicked="btnMenuEjercicio_Clicked">
                             <Button.ImageSource>
                                 <FileImageSource File="ejercicios_icono.png"/>
                             </Button.ImageSource>
@@ -292,7 +284,7 @@
                 Stroke="#E5E7EB"
                 StrokeThickness="1">
             <HorizontalStackLayout Padding="20,8"
-                                   Spacing="30"
+                                   Spacing="5"
                                    HorizontalOptions="Center"
                                    VerticalOptions="Center">
 
@@ -309,6 +301,13 @@
                         BackgroundColor="Transparent"
                         TextColor="#6B7280"
                         Clicked="btnMenuMonitor_Clicked"/>
+
+                <Button x:Name="btnMenuEjercicio"
+                        Text="Ejercicios"
+                        FontSize="12"
+                        BackgroundColor="Transparent"
+                        TextColor="#6B7280"
+                        Clicked="btnMenuEjercicio_Clicked"/>
 
                 <Button x:Name="btnMenuHistorial"
                         Text="Historial"

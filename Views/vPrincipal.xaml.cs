@@ -127,11 +127,10 @@ public partial class vPrincipal : ContentPage
         // Última pausa (ya viene ordenado desc)
         HistorialPausa ultimaPausa = listaPausas.FirstOrDefault();
 
-        int metaDiaria = 6; // por ahora fija; luego si quieres la guardas en alguna tabla
         _resumenDiario = new ResumenDiario
         {
             PausasHoy = cantidadPausasHoy,
-            MetaDiariaTotal = metaDiaria,
+            MetaDiariaTotal = _configuracion.Meta,
             MetaDiariaCompletadas = cantidadPausasHoy,
             RachaDias = rachaDias,
             UltimaPausa = ultimaPausa
@@ -250,6 +249,7 @@ public partial class vPrincipal : ContentPage
     {
         btnMenuInicio.TextColor = Color.FromArgb("#6B7280");
         btnMenuMonitor.TextColor = Color.FromArgb("#6B7280");
+        btnMenuEjercicio.TextColor = Color.FromArgb("#6B7280");
         btnMenuHistorial.TextColor = Color.FromArgb("#6B7280");
         btnMenuAjustes.TextColor = Color.FromArgb("#6B7280");
 
@@ -259,6 +259,8 @@ public partial class vPrincipal : ContentPage
                 btnMenuInicio.TextColor = Color.FromArgb("#2563FF"); break;
             case "Monitor":
                 btnMenuMonitor.TextColor = Color.FromArgb("#2563FF"); break;
+            case "Ejercicio":
+                btnMenuEjercicio.TextColor = Color.FromArgb("#2563FF"); break;
             case "Historial":
                 btnMenuHistorial.TextColor = Color.FromArgb("#2563FF"); break;
             case "Ajustes":
@@ -271,7 +273,7 @@ public partial class vPrincipal : ContentPage
         Navigation.PushAsync(new vMonitor(_usuario));
     }
 
-    private void btnEjercicios_Clicked(object sender, EventArgs e)
+    private void btnMenuEjercicio_Clicked(object sender, EventArgs e)
     {
         Navigation.PushAsync(new vEjercicio(_usuario));
     }

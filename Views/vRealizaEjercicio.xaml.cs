@@ -48,6 +48,7 @@ namespace acalderonFitPause.Views
             _timer.Stop();
 
             int minutos = (int)Math.Ceiling(_segundos / 60.0);
+            string frase = await ObtenerFraseMotivacionalAsync();
 
             var registro = new
             {
@@ -55,7 +56,7 @@ namespace acalderonFitPause.Views
                 EjercicioId = _ejercicio.Id,
                 FechaHora = DateTime.Now,
                 DuracionReal = minutos,
-                FraseMotivacional = "¡Buen trabajo!"
+                FraseMotivacional = frase
             };
 
             try
@@ -94,5 +95,25 @@ namespace acalderonFitPause.Views
             vMonitor.ReanudarMonitorDespuesRutina();
             await Navigation.PopModalAsync();
         }
+
+        private async Task<string> ObtenerFraseMotivacionalAsync()
+        {
+            try
+            {
+                using var client = new HttpClient();
+                string json = await client.GetStringAsync("https://zenquotes.io/api/random");
+                var lista = System.Text.Json.JsonSerializer.Deserialize<List<Frase>>(json);
+
+                if (lista != null && lista.Count > 0)
+                    return lista[0].q;
+
+                return "¡Sigue adelante!";
+            }
+            catch
+            {
+                return "¡Sigue adelante!";
+            }
+        }
+
     }
 }
