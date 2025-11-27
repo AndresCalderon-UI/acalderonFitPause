@@ -24,8 +24,6 @@ namespace acalderonFitPause.Views
             MarcarMenuSeleccionado("Ajustes");
         }
 
-        // ====================== CARGA INICIAL ======================
-
         private async Task CargarConfiguracionAsync()
         {
             try
@@ -49,10 +47,8 @@ namespace acalderonFitPause.Views
                 {
                     var config = lista[0];
 
-                    // Notificaciones
                     swNotificaciones.IsToggled = config.NotificacionFlag;
 
-                    // Intervalo
                     int minutos = config.TiempoAlerta;
                     int indice = 1;
 
@@ -67,11 +63,9 @@ namespace acalderonFitPause.Views
                     pkIntervalo.SelectedIndex = indice;
                     ActualizarTextoIntervalo(minutos);
 
-                    // Meta diaria
                     sldMeta.Value = config.Meta;
                     lblMetaValor.Text = config.Meta.ToString();
 
-                    // NUEVO: Sensibilidad (LimiteMovimiento)
                     double limite = config.LimiteMovimiento;
                     int indiceSens = ObtenerIndiceSensibilidadDesdeLimite(limite);
                     pkSensibilidad.SelectedIndex = indiceSens;
@@ -107,8 +101,6 @@ namespace acalderonFitPause.Views
         }
 
 
-        // ====================== LOGICA DE CONTROLES ======================
-
         private int ObtenerMinutosSeleccionados()
         {
             switch (pkIntervalo.SelectedIndex)
@@ -125,19 +117,18 @@ namespace acalderonFitPause.Views
         {
             switch (pkSensibilidad.SelectedIndex)
             {
-                case 0: return 0.08; // Alta
-                case 1: return 0.15; // Media
-                case 2: return 0.25; // Baja
+                case 0: return 0.08;
+                case 1: return 0.15;
+                case 2: return 0.25;
                 default: return 0.15;
             }
         }
 
-        // Dado un valor desde BD, decide qué índice usar en el Picker
         private int ObtenerIndiceSensibilidadDesdeLimite(double limite)
         {
-            if (limite <= 0.10) return 0; // Alta
-            if (limite >= 0.20) return 2; // Baja
-            return 1;                     // Media por defecto
+            if (limite <= 0.10) return 0;
+            if (limite >= 0.20) return 2;
+            return 1;
         }
 
         private void ActualizarTextoSensibilidad(int indice)
@@ -159,7 +150,6 @@ namespace acalderonFitPause.Views
             }
         }
 
-        // Evento del Picker
         private void pkSensibilidad_SelectedIndexChanged(object sender, EventArgs e)
         {
             int indice = pkSensibilidad.SelectedIndex;
@@ -183,8 +173,6 @@ namespace acalderonFitPause.Views
             int meta = (int)Math.Round(e.NewValue);
             lblMetaValor.Text = meta.ToString();
         }
-
-        // ====================== GUARDAR (INSERT/UPDATE) ======================
 
         private async void btnGuardar_Clicked(object sender, EventArgs e)
         {
@@ -217,7 +205,6 @@ namespace acalderonFitPause.Views
 
                     if (lista != null && lista.Count > 0)
                     {
-                        // Ya existe: UPDATE
                         int idExistente = lista[0].Id;
                         string filtroActualizar = $"?Id=eq.{idExistente}";
 
@@ -228,7 +215,6 @@ namespace acalderonFitPause.Views
                     }
                     else
                     {
-                        // No existe: INSERT
                         respuestaGuardar = await servicioSupabase.InsertarAsync(
                             configSupabase.tblConfiguracion,
                             ins_act);
@@ -236,7 +222,6 @@ namespace acalderonFitPause.Views
                 }
                 else
                 {
-                    // Consulta fallo: intentar insert
                     respuestaGuardar = await servicioSupabase.InsertarAsync(
                         configSupabase.tblConfiguracion,
                         ins_act);
@@ -280,8 +265,6 @@ namespace acalderonFitPause.Views
         {
             await Navigation.PopAsync();
         }
-
-        // ====================== MENU INFERIOR ======================
 
         private void MarcarMenuSeleccionado(string opcion)
         {

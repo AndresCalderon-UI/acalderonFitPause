@@ -68,7 +68,7 @@ namespace acalderonFitPause.Views
             }
         }
 
-        // Selección por cambio de selección del CollectionView (click en PC, selección normal)
+        // Selección por clic
         private void cvElegirEjercicio(object sender, SelectionChangedEventArgs e)
         {
             _ejercicioSeleccionado = e.CurrentSelection?.FirstOrDefault() as Ejercicio;
@@ -80,7 +80,7 @@ namespace acalderonFitPause.Views
             }
         }
 
-        // Selección por tap en el Frame (ideal para celular)
+        // Selección por tap
         private void OnEjercicioTapped(object sender, TappedEventArgs e)
         {
             if (sender is Frame frame && frame.BindingContext is Ejercicio ejercicio)
@@ -89,8 +89,6 @@ namespace acalderonFitPause.Views
 
                 lblBannerTitulo.Text = ejercicio.Nombre;
                 lblBannerDescripcion.Text = ejercicio.Descripcion;
-
-                // Opcional: sincronizar la selección visual del CollectionView
                 cvEjercicios.SelectedItem = ejercicio;
             }
         }
@@ -99,11 +97,10 @@ namespace acalderonFitPause.Views
         {
             if (_ejercicioSeleccionado == null)
             {
-                await DisplayAlert("Mensaje", "Selecciona un ejercicio de tu lista.", "Aceptar");
+                await DisplayAlert("Mensaje", "Selecciona un ejercicio de tu lista", "Aceptar");
                 return;
             }
 
-            // Pausar el monitor de actividad
             vMonitor.PausarMonitorPorRutina();
 
             await Navigation.PushModalAsync(new vRealizaEjercicio(_usuario, _ejercicioSeleccionado));

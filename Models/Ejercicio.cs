@@ -11,9 +11,9 @@ namespace acalderonFitPause.Models
             public int Id { get; set; }
             public string Nombre { get; set; }
             public string Descripcion { get; set; }
-            public int Duracion { get; set; }         // en minutos
-            public string Categoria { get; set; }     // "Espalda", "Cuello", etc.
+            public int Duracion { get; set; }
+            public string Categoria { get; set; }
             public string ImagenUrl { get; set; }
-            public string Dificultad { get; set; }    // "Fácil", "Media", "Alta"
+            public string Dificultad { get; set; }
         }
 }

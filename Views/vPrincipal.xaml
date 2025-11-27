@@ -4,14 +4,11 @@
              x:Class="acalderonFitPause.Views.vPrincipal"
              Title="Principal">
 
-    <!-- Grid para contenido + menú inferior fijo -->
     <Grid RowDefinitions="*,Auto" BackgroundColor="#F3F4F6">
 
-        <!-- CONTENIDO PRINCIPAL -->
         <ScrollView Grid.Row="0">
             <VerticalStackLayout Spacing="0">
 
-                <!-- Header Section -->
                 <Grid BackgroundColor="#2563FF" Padding="20">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -22,7 +19,6 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
-                    <!-- Saludo -->
                     <VerticalStackLayout Grid.Row="0" Grid.Column="0" Spacing="5">
                         <Label Text="Hola," 
                                TextColor="White" 
@@ -34,7 +30,6 @@
                                FontSize="24"/>
                     </VerticalStackLayout>
 
-                    <!-- Tarjeta Actividad -->
                     <Border Grid.Row="1" 
                             Grid.ColumnSpan="2"
                             Background="White"
@@ -50,7 +45,6 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
-                            <!-- Icono -->
                             <Border Grid.Column="0" 
                                     Background="#EBF5FF"
                                     StrokeThickness="0"
@@ -61,7 +55,6 @@
                                        HeightRequest="24"/>
                             </Border>
 
-                            <!-- Info -->
                             <VerticalStackLayout Grid.Column="1" 
                                                  VerticalOptions="Center"
                                                  Spacing="2">
@@ -74,7 +67,6 @@
                                        FontSize="24"/>
                             </VerticalStackLayout>
 
-                            <!-- Botón Ver Detalle -->
                             <Button x:Name="btnVerDetalle"
                                     Grid.Column="2" 
                                     Text="Ver Detalle"
@@ -88,22 +80,18 @@
                     </Border>
                 </Grid>
 
-                <!-- Content Section -->
                 <VerticalStackLayout Padding="20" Spacing="16">
 
-                    <!-- Título sección -->
                     <Label Text="Resumen de Hoy" 
                            TextColor="#111827"
                            FontSize="20"/>
 
-                    <!-- Stats Grid -->
                     <Grid ColumnSpacing="16" RowSpacing="16">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
-                        <!-- Pausas Card -->
                         <Border Grid.Column="0" 
                                 Stroke="#E5E7EB"
                                 Background="White"
@@ -129,7 +117,6 @@
                             </VerticalStackLayout>
                         </Border>
 
-                        <!-- Racha Card -->
                         <Border Grid.Column="1" 
                                 Stroke="#E5E7EB"
                                 Background="White"
@@ -156,7 +143,6 @@
                         </Border>
                     </Grid>
 
-                    <!-- Meta Diaria Card -->
                     <Border Stroke="#E5E7EB"
                             Background="White"
                             StrokeThickness="1"
@@ -197,7 +183,6 @@
                         </VerticalStackLayout>
                     </Border>
 
-                    <!-- Última Pausa Activa -->
                     <Border Stroke="#E5E7EB"
                             Background="White"
                             StrokeThickness="1"
@@ -226,6 +211,10 @@
                                            Text="Nombre Ejercicio"
                                            TextColor="#111827"
                                            FontSize="16"/>
+                                    <Label x:Name="lblUltimaPausaFrase"
+                                           Text="Nombre Ejercicio"
+                                           TextColor="#111827"
+                                           FontSize="16"/>
                                     <Label x:Name="lblUltimaPausaTiempo"
                                            Text="Hace X tiempo"
                                            TextColor="#6B7280"
@@ -235,7 +224,6 @@
                         </VerticalStackLayout>
                     </Border>
 
-                    <!-- Accesos rápidos -->
                     <Grid ColumnSpacing="16" Margin="0,10,0,0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -278,7 +266,7 @@
             </VerticalStackLayout>
         </ScrollView>
 
-        <!-- MENÚ INFERIOR SIEMPRE VISIBLE -->
+        <!-- MENÚ INFERIOR -->
         <Border Grid.Row="1"
                 Background="White"
                 Stroke="#E5E7EB"

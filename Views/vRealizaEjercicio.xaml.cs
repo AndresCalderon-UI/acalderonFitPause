@@ -63,19 +63,12 @@ namespace acalderonFitPause.Views
             {
                 var resp = await servicioSupabase.InsertarAsync(configSupabase.tblHistorial, registro);
 
-                //if (!resp.IsSuccessStatusCode)
-                //{
-                //    await DisplayAlert("Error", "No se pudo guardar el historial.", "Aceptar");
-                //    return;
-                //}
                 if (!resp.IsSuccessStatusCode)
                 {
-                    var contenido = await resp.Content.ReadAsStringAsync();
-                    await DisplayAlert("Error al guardar historial",
-                        $"Código HTTP: {(int)resp.StatusCode}\n\nDetalle:\n{contenido}",
-                        "Aceptar");
+                    await DisplayAlert("Error", "No se pudo guardar el historial", "Aceptar");
                     return;
                 }
+
             }
             catch (Exception ex)
             {

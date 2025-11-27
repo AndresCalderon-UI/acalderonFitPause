@@ -9,6 +9,8 @@ public partial class vPrincipal : ContentPage
 {
     private readonly Usuario _usuario;
     private ConfiguracionUsuario _configuracion;
+    private HistorialPausa _ultimaPausa;
+    private string _nombreUltimoEjercicio;
     private ResumenDiario _resumenDiario;
 
     public vPrincipal(Usuario usuario)
@@ -17,11 +19,10 @@ public partial class vPrincipal : ContentPage
 
         _usuario = usuario;
 
-        // Mostrar nombre apenas se carga
         lblNombreUsuario.Text = _usuario?.Nombre ?? "Usuario";
     }
 
-    // Aquí cargamos datos reales cada vez que la vista aparece
+    // Cargamos datos reales cada vez que la vista aparece
     protected override async void OnAppearing()
     {
         base.OnAppearing();
@@ -42,26 +43,22 @@ public partial class vPrincipal : ContentPage
         }
     }
 
-    // ========= CONFIGURACIÓN DEL USUARIO =========
-
     private async Task CargarConfiguracionUsuarioAsync()
     {
         // Ejemplo: SELECT * FROM configuraciones WHERE UsuarioId = _usuario.Id LIMIT 1
         string filtroConfiguracion = $"?UsuarioId=eq.{_usuario.Id}&limit=1";
 
         var respuesta = await servicioSupabase.ConsultarAsync(
-            configSupabase.tblConfiguracion,   // define esto en tu config
+            configSupabase.tblConfiguracion,
             filtroConfiguracion
         );
 
         if (!respuesta.IsSuccessStatusCode)
         {
-            // Si no hay config, ponemos una por defecto
             _configuracion = new ConfiguracionUsuario
             {
                 UsuarioId = _usuario.Id,
-                TiempoAlerta = 45//,
-                //NotificacionesActivas = true,
+                TiempoAlerta = 45
             };
             return;
         }
@@ -74,8 +71,7 @@ public partial class vPrincipal : ContentPage
             _configuracion = new ConfiguracionUsuario
             {
                 UsuarioId = _usuario.Id,
-                TiempoAlerta = 45//,
-                //NotificacionesActivas = true,
+                TiempoAlerta = 45
             };
         }
         else
@@ -84,15 +80,12 @@ public partial class vPrincipal : ContentPage
         }
     }
 
-    // ========= RESUMEN DIARIO / HISTORIAL =========
-
     private async Task CargarResumenDiarioAsync()
     {
-        // 1. Obtener historial de pausas del usuario, ordenado desc por fecha
         string filtroHistorial = $"?UsuarioId=eq.{_usuario.Id}&order=FechaHora.desc";
 
         var respuesta = await servicioSupabase.ConsultarAsync(
-            configSupabase.tblHistorial,   // define esto en tu config
+            configSupabase.tblHistorial,
             filtroHistorial
         );
 
@@ -114,18 +107,25 @@ public partial class vPrincipal : ContentPage
         DateTime hoy = DateTime.Today;
         DateTime mañana = hoy.AddDays(1);
 
-        // Pausas SOLO del día de hoy
+        // Pausas del día
         var pausasHoy = listaPausas
             .Where(p => p.FechaHora >= hoy && p.FechaHora < mañana)
             .ToList();
 
         int cantidadPausasHoy = pausasHoy.Count;
 
-        // Racha de días seguidos con al menos 1 pausa
         int rachaDias = CalcularRachaDias(listaPausas);
 
-        // Última pausa (ya viene ordenado desc)
-        HistorialPausa ultimaPausa = listaPausas.FirstOrDefault();
+        _ultimaPausa = listaPausas.FirstOrDefault();
+
+        if (_ultimaPausa != null)
+        {
+            _nombreUltimoEjercicio = await ObtenerNombreEjercicioUltimaPausaAsync(_ultimaPausa);
+        }
+        else
+        {
+            _nombreUltimoEjercicio = "Nombre ejercicio";
+        }
 
         _resumenDiario = new ResumenDiario
         {
@@ -133,7 +133,7 @@ public partial class vPrincipal : ContentPage
             MetaDiariaTotal = _configuracion.Meta,
             MetaDiariaCompletadas = cantidadPausasHoy,
             RachaDias = rachaDias,
-            UltimaPausa = ultimaPausa
+            UltimaPausa = _ultimaPausa
         };
     }
 
@@ -152,7 +152,6 @@ public partial class vPrincipal : ContentPage
 
     private int CalcularRachaDias(List<HistorialPausa> listaPausas)
     {
-        // Días con al menos una pausa
         var diasConPausa = listaPausas
             .Select(p => p.FechaHora.Date)
             .Distinct()
@@ -171,22 +170,18 @@ public partial class vPrincipal : ContentPage
             }
             else if (dia < fechaEsperada)
             {
-                break; // se rompe la racha
+                break;
             }
         }
 
         return racha;
     }
 
-    // ========= PINTAR EN LA VISTA =========
-
     private void PintarResumenEnPantalla()
     {
         if (_resumenDiario == null)
             _resumenDiario = CrearResumenVacio();
 
-        // Tiempo sin movimiento:
-        // por ahora usamos el tiempo de alerta como referencia (luego lo cambiaremos por el sensor real)
         int tiempoSinMovimiento = _configuracion?.TiempoAlerta ?? 45;
         lblTiempoSinMovimiento.Text = $"{tiempoSinMovimiento} min";
 
@@ -198,23 +193,36 @@ public partial class vPrincipal : ContentPage
 
         // Meta diaria
         lblMetaDiariaTexto.Text =
-            $"{_resumenDiario.MetaDiariaCompletadas} de {_resumenDiario.MetaDiariaTotal} pausas";
+            $"{_resumenDiario.MetaDiariaCompletadas} de {_configuracion.Meta} pausas";
 
         lblMetaDiariaPorcentaje.Text = $"{_resumenDiario.PorcentajeMeta}%";
 
-        double progreso = _resumenDiario.MetaDiariaTotal == 0
-            ? 0
-            : Math.Min(1.0, _resumenDiario.PorcentajeMeta / 100.0);
+        double progreso;
+
+        if (_resumenDiario.MetaDiariaTotal == 0)
+        {
+            progreso = 0;
+        }
+        else
+        {
+            progreso = Math.Min(1.0, _resumenDiario.PorcentajeMeta / 100.0);
+        }
 
         pbMetaDiaria.Progress = progreso;
 
         // Última pausa activa
         if (_resumenDiario.UltimaPausa != null)
         {
-            lblUltimaPausaNombre.Text =
-                string.IsNullOrWhiteSpace(_resumenDiario.UltimaPausa.FraseMotivacional)
-                    ? "Última pausa realizada"
-                    : _resumenDiario.UltimaPausa.FraseMotivacional;
+            if (string.IsNullOrWhiteSpace(_resumenDiario.UltimaPausa.FraseMotivacional) ||
+                string.IsNullOrWhiteSpace(_nombreUltimoEjercicio))
+            {
+                lblUltimaPausaNombre.Text = "Última pausa realizada";
+            }
+            else
+            {
+                lblUltimaPausaNombre.Text = _nombreUltimoEjercicio;
+                lblUltimaPausaFrase.Text = _resumenDiario.UltimaPausa.FraseMotivacional;
+            }
 
             lblUltimaPausaTiempo.Text = FormatearHoraRelativa(
                 _resumenDiario.UltimaPausa.FechaHora,
@@ -227,9 +235,32 @@ public partial class vPrincipal : ContentPage
             lblUltimaPausaTiempo.Text = "Empieza tu primera pausa hoy";
         }
 
-        // Menú inferior: estás en Inicio
         MarcarMenuSeleccionado("Inicio");
     }
+
+    private async Task<string> ObtenerNombreEjercicioUltimaPausaAsync(HistorialPausa pausa)
+    {
+        if (pausa == null)
+            return null;
+
+        // Ajusta "EjercicioId" y "tblEjercicio" según tus nombres reales
+        string filtro = $"?Id=eq.{pausa.EjercicioId}&select=Nombre&limit=1";
+
+        var respuesta = await servicioSupabase.ConsultarAsync(
+            configSupabase.tblEjercicio,
+            filtro
+        );
+
+        if (!respuesta.IsSuccessStatusCode)
+            return null;
+
+        var contenido = await respuesta.Content.ReadAsStringAsync();
+        var listaEjercicios = JsonSerializer.Deserialize<List<Ejercicio>>(contenido);
+
+        var ejercicio = listaEjercicios?.FirstOrDefault();
+        return ejercicio?.Nombre;
+    }
+
 
     private string FormatearHoraRelativa(DateTime fechaHora, int duracionMinutos)
     {

@@ -5,14 +5,11 @@
              Title="Mis Ejercicios"
              BackgroundColor="#F3F4F6">
 
-    <!-- LAYOUT GENERAL: CONTENIDO + MENÚ INFERIOR FIJO -->
     <Grid RowDefinitions="*,Auto">
 
-        <!-- CONTENIDO SCROLLEABLE -->
         <ScrollView Grid.Row="0">
             <VerticalStackLayout Padding="0" Spacing="0">
 
-                <!-- HEADER SUPERIOR -->
                 <Grid BackgroundColor="#2563FF"
                       Padding="16,24,16,16">
                     <Grid.RowDefinitions>
@@ -25,7 +22,6 @@
                         <ColumnDefinition Width="40" />
                     </Grid.ColumnDefinitions>
 
-                    <!-- Botón atrás -->
                     <ImageButton x:Name="btnAtras"
                                  Grid.Row="0"
                                  Grid.Column="0"
@@ -35,7 +31,6 @@
                                  Source="regresar_icono.png"
                                  Clicked="btnAtras_Clicked" />
 
-                    <!-- Título -->
                     <Label x:Name="lblTituloMisEjercicios"
                            Grid.Row="0"
                            Grid.Column="1"
@@ -45,7 +40,6 @@
                            TextColor="White"
                            VerticalOptions="Center" />
 
-                    <!-- Botón agregar (icono más) -->
                     <ImageButton x:Name="btnAgregarEjercicio"
                                  Grid.Row="0"
                                  Grid.Column="2"
@@ -55,7 +49,6 @@
                                  Source="agregar_icono.png"
                                  Clicked="btnAgregarEjercicio_Clicked" />
 
-                    <!-- Cantidad de ejercicios -->
                     <Label x:Name="lblCantidadEjercicios"
                            Grid.Row="1"
                            Grid.Column="1"
@@ -66,10 +59,8 @@
                            VerticalOptions="Center" />
                 </Grid>
 
-                <!-- CONTENIDO PRINCIPAL -->
                 <VerticalStackLayout Padding="16" Spacing="16">
 
-                    <!-- BANNER RECOMENDADO -->
                     <Frame CornerRadius="16"
                            HasShadow="False"
                            Padding="0"
@@ -81,7 +72,6 @@
                                 <RowDefinition Height="70" />
                             </Grid.RowDefinitions>
 
-                            <!-- Imagen del banner -->
                             <Grid Grid.Row="0">
                                 <Image x:Name="imgBannerEjercicio"
                                        Source="portada.png"
@@ -105,7 +95,6 @@
                                 </StackLayout>
                             </Grid>
 
-                            <!-- Botón comenzar rutina -->
                             <Grid Grid.Row="1"
                                   Padding="16,8,16,12">
                                 <Grid.ColumnDefinitions>
@@ -128,7 +117,6 @@
                         </Grid>
                     </Frame>
 
-                    <!-- LISTA DE EJERCICIOS -->
                     <CollectionView x:Name="cvEjercicios"
                                     SelectionMode="Single"
                                     SelectionChanged="cvElegirEjercicio">
@@ -142,7 +130,6 @@
                                        BackgroundColor="White"
                                        BorderColor="#E5E7EB">
 
-                                    <!-- Gesto de tap para seleccionar desde el celular -->
                                     <Frame.GestureRecognizers>
                                         <TapGestureRecognizer Tapped="OnEjercicioTapped" />
                                     </Frame.GestureRecognizers>
@@ -161,7 +148,6 @@
                                             <ColumnDefinition Width="32" />
                                         </Grid.ColumnDefinitions>
 
-                                        <!-- Icono circular a la izquierda -->
                                         <Frame Grid.Row="0"
                                                Grid.RowSpan="3"
                                                Grid.Column="0"
@@ -180,7 +166,6 @@
                                                    HeightRequest="20" />
                                         </Frame>
 
-                                        <!-- Nombre -->
                                         <StackLayout Grid.Row="0"
                                                      Grid.Column="1"
                                                      Orientation="Horizontal"
@@ -192,7 +177,6 @@
                                                    TextColor="#111827" />
                                         </StackLayout>
 
-                                        <!-- Categoría -->
                                         <Label x:Name="lblCategoriaEjercicio"
                                                Grid.Row="1"
                                                Grid.Column="1"
@@ -200,7 +184,6 @@
                                                FontSize="14"
                                                TextColor="#6B7280" />
 
-                                        <!-- Descripción -->
                                         <Label x:Name="lblDescripcionEjercicio"
                                                Grid.Row="2"
                                                Grid.Column="1"
@@ -209,7 +192,6 @@
                                                FontSize="14"
                                                TextColor="#6B7280" />
 
-                                        <!-- Duración -->
                                         <StackLayout Grid.Row="3"
                                                      Grid.Column="1"
                                                      Orientation="Horizontal"
@@ -229,7 +211,6 @@
                                                    TextColor="#6B7280" />
                                         </StackLayout>
 
-                                        <!-- Botones editar / eliminar -->
                                         <StackLayout Grid.Row="4"
                                                      Grid.Column="1"
                                                      Grid.ColumnSpan="2"
@@ -277,7 +258,6 @@
             </VerticalStackLayout>
         </ScrollView>
 
-        <!-- MENÚ INFERIOR SIEMPRE VISIBLE -->
         <Border Grid.Row="1"
                 Background="White"
                 Stroke="#E5E7EB"

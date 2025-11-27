@@ -35,16 +35,10 @@ namespace acalderonFitPause.Views
         }
 
 
-        #region Campos de instancia
-
         private readonly IDispatcherTimer _temporizador;
         private readonly Usuario _usuario;
         private ConfiguracionUsuario _configuracion;
         private bool _notificacionesActivas = true;
-
-        #endregion
-
-        #region Constructor
 
         public vMonitor(Usuario usuario)
         {
@@ -63,7 +57,6 @@ namespace acalderonFitPause.Views
 
         private void InicializarEstadoCompartido()
         {
-            // SOLO LA PRIMERA VEZ se inicializa el estado
             if (_estadoInicializado)
                 return;
 
@@ -74,17 +67,12 @@ namespace acalderonFitPause.Views
             _estadoInicializado = true;
         }
 
-        #endregion
-
-        #region Ciclo de vida de la página
-
         protected override async void OnAppearing()
         {
             base.OnAppearing();
 
             _instanciaActiva = this;
 
-            // Re-suscribimos el acelerómetro para evitar handlers duplicados
             Accelerometer.ReadingChanged -= leeAcelerometro;
             Accelerometer.ReadingChanged += leeAcelerometro;
 
@@ -93,9 +81,9 @@ namespace acalderonFitPause.Views
                 if (!Accelerometer.IsMonitoring)
                     Accelerometer.Start(SensorSpeed.UI);
             }
-            catch
+            catch (Exception ex)
             {
-                // Podrías loguear el error si lo necesitas
+                Console.WriteLine("Error al iniciar el acelerómetro " + ex.Message);
             }
 
             await CargarConfiguracionUsuarioAsync();
@@ -108,10 +96,6 @@ namespace acalderonFitPause.Views
             ActualizarTextoBotonMonitor();
             ActualizarPantalla();
         }
-
-        #endregion
-
-        #region Métodos estáticos llamados desde otras vistas
 
         public static void PausarMonitorPorRutina()
         {
@@ -132,9 +116,9 @@ namespace acalderonFitPause.Views
             if (_instanciaActiva == null)
                 return;
 
+            // Reiniciat el conteo por inactividad
             MainThread.BeginInvokeOnMainThread(() =>
             {
-                // Se reinicia el conteo por inactividad y se retoma el monitor
                 _tiempoSinMovimientoSeg = 0;
                 _ultimaActividad = DateTime.Now;
                 _monitorActivo = true;
@@ -144,10 +128,6 @@ namespace acalderonFitPause.Views
                 _instanciaActiva.ActualizarPantalla();
             });
         }
-
-        #endregion
-
-        #region Carga de configuración desde la BD
 
         private async Task CargarConfiguracionUsuarioAsync()
         {
@@ -176,23 +156,17 @@ namespace acalderonFitPause.Views
                     }
                 }
 
-                // Sin configuración en BD, valores por defecto
                 _tiempoObjetivoMin = 45;
                 _notificacionesActivas = true;
                 _limiteDeMovimiento = 0.15;
             }
             catch
             {
-                // En caso de error, un valor seguro para pruebas
                 _tiempoObjetivoMin = 45;
                 _notificacionesActivas = true;
                 _limiteDeMovimiento = 0.15;
             }
         }
-
-        #endregion
-
-        #region Manejo del acelerómetro
 
         private void leeAcelerometro(object sender, AccelerometerChangedEventArgs e)
         {
@@ -204,10 +178,11 @@ namespace acalderonFitPause.Views
                 eje.Y * eje.Y +
                 eje.Z * eje.Z);
 
-            // Reposo ~ 1g. Si se aleja de 1 => movimiento
+            // Reposo <= 1
+            // Si se aleja de 1 => movimiento
             bool actividad = Math.Abs(fuerzaAceleracion - 1.0) > _limiteDeMovimiento;
 
-            // Sólo si cambia el estado, actualizamos UI
+            // Sólo si cambia el estado actualizamos UI
             if (actividad == _enMovimiento)
                 return;
 
@@ -230,16 +205,12 @@ namespace acalderonFitPause.Views
             });
         }
 
-        #endregion
-
-        #region Temporizador (cada 1 segundo)
-
         private void contTemporizador(object sender, EventArgs e)
         {
             if (!_monitorActivo)
                 return;
 
-            // Si se detecta movimiento, no contamos inactividad
+            // Si se detecta movimiento no contamos inactividad
             if (_enMovimiento)
             {
                 ActualizarPantalla();
@@ -252,7 +223,6 @@ namespace acalderonFitPause.Views
 
             if (_tiempoSinMovimientoSeg >= tiempoLimite)
             {
-                // Fijamos el contador en el límite y detenemos el monitor
                 _tiempoSinMovimientoSeg = tiempoLimite;
                 _temporizador.Stop();
 
@@ -282,26 +252,14 @@ namespace acalderonFitPause.Views
             notification.Show();
         }
 
-        #endregion
-
-        #region Actualización de elementos en pantalla
-
         private void ActualizarPantalla()
         {
-            // En tu caso estás mostrando "min" aunque cuentes segundos,
-            // si luego quieres, aquí puedes cambiar a minutos reales.
             int minutos = _tiempoSinMovimientoSeg;
             lblTiempoSinMovimiento.Text = minutos + " min";
 
             var diff = DateTime.Now - _ultimaActividad;
             lblUltimaActividad.Text = "Hace " + (int)diff.TotalMinutes + " min";
 
-            //int tiempoLimite = ObtenerTiempoLimite();
-            //double progreso = tiempoLimite > 0
-            //    ? (double)_tiempoSinMovimientoSeg / tiempoLimite
-            //    : 0;
-
-            //progreso = Math.Clamp(progreso, 0, 1);
             int tiempoLimite = ObtenerTiempoLimite();
 
             double progreso;
@@ -360,7 +318,7 @@ namespace acalderonFitPause.Views
             lblMensajeEstado.TextColor = color;
             pbProgreso.ProgressColor = color;
 
-            if (_monitorActivo)//hacer la prueba con el estado del monitor
+            if (_monitorActivo)
             {
                 frmEstadoSensor.BackgroundColor = Color.FromArgb("#D1FAE5");
                 lblEstadoSensor.Text = "Activo";
@@ -373,7 +331,6 @@ namespace acalderonFitPause.Views
                 lblEstadoSensor.TextColor = Color.FromArgb("#6B7280");
             }
 
-            // Mostrar botón de pausa activa sólo cuando llegue al 100%
             btnIniciarPausaActiva.IsVisible = progreso >= 1.0;
         }
 
@@ -391,10 +348,6 @@ namespace acalderonFitPause.Views
             }
         }
 
-        #endregion
-
-        #region Handlers de botones (monitor y navegación)
-
         private void btnPausarIniciarMonitor_Clicked(object sender, EventArgs e)
         {
             _monitorActivo = !_monitorActivo;
@@ -411,25 +364,12 @@ namespace acalderonFitPause.Views
         private async void btnIniciarPausaActiva_Clicked(object sender, EventArgs e)
         {
            await Navigation.PushAsync(new vEjercicio(_usuario));
-
-            //_tiempoSinMovimientoSeg = 0;
-            //_ultimaActividad = DateTime.Now;
-
-            //_monitorActivo = true;
-            //_temporizador.Start();
-
-            //ActualizarTextoBotonMonitor();
-            //ActualizarPantalla();
         }
 
         private void btnAtras_Clicked(object sender, EventArgs e)
         {
             Navigation.PopAsync();
         }
-
-        #endregion
-
-        #region Menú inferior
 
         private void MarcarMenuSeleccionado(string opcion)
         {
@@ -484,7 +424,5 @@ namespace acalderonFitPause.Views
             MarcarMenuSeleccionado("Ajustes");
             await Navigation.PushAsync(new vConfiguracion(_usuario));
         }
-
-        #endregion
     }
 }

@@ -4,25 +4,19 @@
              x:Class="acalderonFitPause.Views.vHistorial"
              Title="Historial">
 
-    <!-- CONTENEDOR PRINCIPAL -->
     <Grid>
         <Grid.RowDefinitions>
-            <!-- Contenido scrolleable -->
             <RowDefinition Height="*"/>
-            <!-- Menú inferior -->
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- SCROLL DE CONTENIDO -->
         <ScrollView Grid.Row="0">
             <Grid>
-                <!-- Grid principal: fila 0 header, fila 1 contenido -->
                 <Grid.RowDefinitions>
                     <RowDefinition Height="220"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <!-- HEADER -->
                 <Grid Grid.Row="0"
                       BackgroundColor="#2563FF"
                       Padding="20">
@@ -31,7 +25,6 @@
                         <RowDefinition Height="140"/>
                     </Grid.RowDefinitions>
 
-                    <!-- Barra superior con boton volver y titulo -->
                     <Grid Grid.Row="0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="40"/>
@@ -54,7 +47,6 @@
                                VerticalOptions="Center"/>
                     </Grid>
 
-                    <!-- Tarjeta de estadisticas -->
                     <Frame Grid.Row="1"
                            BackgroundColor="White"
                            CornerRadius="16"
@@ -100,12 +92,10 @@
                     </Frame>
                 </Grid>
 
-                <!-- CONTENIDO -->
                 <VerticalStackLayout Grid.Row="1"
                                      Padding="20"
                                      Spacing="16">
 
-                    <!-- FILTRO POR FECHAS -->
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="30"/>
@@ -152,7 +142,6 @@
                                     DateSelected="dtpHasta_DateSelected"/>
                     </Grid>
 
-                    <!-- LISTA DE HISTORIAL -->
                     <CollectionView x:Name="cvHistorial"
                                     ItemsSource="{Binding HistorialPausas}"
                                     SelectionMode="None">
@@ -170,7 +159,6 @@
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
 
-                                        <!-- Icono -->
                                         <Frame Grid.Column="0"
                                                BackgroundColor="#EBF5FF"
                                                CornerRadius="12"
@@ -182,11 +170,9 @@
                                                    HeightRequest="20"/>
                                         </Frame>
 
-                                        <!-- Contenido -->
                                         <VerticalStackLayout Grid.Column="1"
                                                              Spacing="8">
 
-                                            <!-- Encabezado: fecha y duracion -->
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="*"/>
@@ -204,12 +190,10 @@
                                                 </VerticalStackLayout>
                                             </Grid>
 
-                                            <!-- Frase -->
                                             <Label Text="{Binding FraseMotivacional}"
                                                    TextColor="#6B7280"
                                                    FontSize="14"/>
 
-                                            <!-- Boton eliminar -->
                                             <Button x:Name="btnEliminar"
                                                     Text="Eliminar"
                                                     BackgroundColor="Transparent"
@@ -231,7 +215,6 @@
                         </CollectionView.ItemTemplate>
                     </CollectionView>
 
-                    <!-- ESTADO VACIO -->
                     <Frame x:Name="frmVacio"
                            BorderColor="#E5E7EB"
                            BackgroundColor="White"
@@ -256,7 +239,6 @@
             </Grid>
         </ScrollView>
 
-        <!-- MENÚ INFERIOR -->
         <Border Grid.Row="1"
                 Background="White"
                 Stroke="#E5E7EB"

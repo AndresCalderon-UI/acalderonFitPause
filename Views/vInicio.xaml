@@ -13,27 +13,23 @@
                        Aspect="AspectFit"
                        />
 
-            <!-- App Name -->
             <Label Text="FitPause" 
                    FontSize="48"
                    TextColor="White"
                    HorizontalTextAlignment="Center"
                    Margin="0,20,0,0"/>
 
-            <!-- Tagline -->
             <Label Text="Tu salud empieza con una pausa" 
                    FontSize="20"
                    TextColor="White"
                    Opacity="0.9"
                    HorizontalTextAlignment="Center"/>
 
-            <!-- Hero Image -->
             <Image Source="portada.png" 
                    HeightRequest="100"
                    Aspect="AspectFill"
                    Margin="0,20,0,0"/>
 
-            <!-- Description -->
             <Label Text="Detecta tu inactividad y te recuerda tomar pausas saludables" 
                    FontSize="16"
                    TextColor="White"
@@ -41,7 +37,6 @@
                    HorizontalTextAlignment="Center"
                    Margin="0,30,0,0"/>
 
-            <!-- Get Started Button -->
             <Button Text="Comenzar" 
                     BackgroundColor="White"
                     TextColor="#2563FF"
@@ -50,7 +45,6 @@
                     Margin="0,10,0,0"
                     Clicked="Comienzo_Clicked"/>
 
-            <!-- Features List -->
             <VerticalStackLayout Spacing="10" Margin="0,20,0,0" Opacity="0.75">
                 <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
                     <BoxView WidthRequest="8" 

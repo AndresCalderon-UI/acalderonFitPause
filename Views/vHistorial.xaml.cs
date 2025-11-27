@@ -25,7 +25,6 @@ namespace acalderonFitPause.Views
             HistorialPausas = new ObservableCollection<HistorialPausa>();
             BindingContext = this;
 
-            // Rango inicial de fechas: última semana
             dtpDesde.Date = DateTime.Today.AddDays(-7);
             dtpHasta.Date = DateTime.Today;
 
@@ -48,7 +47,6 @@ namespace acalderonFitPause.Views
                 string fechaDesdeTexto = fechaDesde.ToString("yyyy-MM-ddTHH:mm:ss");
                 string fechaHastaTexto = fechaHasta.ToString("yyyy-MM-ddTHH:mm:ss");
 
-                // Filtro por UsuarioId + rango de fechas + select al final
                 string filtro =
                     $"?UsuarioId=eq.{_usuario.Id}" +
                     $"&FechaHora=gte.{fechaDesdeTexto}" +

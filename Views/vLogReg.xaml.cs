@@ -18,7 +18,6 @@ public partial class vLogReg : ContentPage
         frmLogin.IsVisible = true;
         frmRegistro.IsVisible = false;
 
-        // Lógica para los estilos de los botones
         LoginTabButton.BackgroundColor = Color.FromArgb("#2563FF");
         LoginTabButton.TextColor = Colors.White;
 
@@ -98,7 +97,6 @@ public partial class vLogReg : ContentPage
                 return;
             }
 
-            // Login exitoso
             await Navigation.PushAsync(new Views.vPrincipal(usuario));
         }
         catch (Exception ex)
@@ -145,14 +143,6 @@ public partial class vLogReg : ContentPage
             if (respuesta.IsSuccessStatusCode)
             {
                 await DisplayAlert("Listo!", "tu cuenta ha sido creada, por favor inicia sesión", "OK");
-
-                //var usuarioNuevo = new Usuario
-                //{
-                //    Nombre = txtRegNombre.Text?.Trim(),
-                //    Correo = txtRegCorreo.Text?.Trim().ToLower()
-                //};
-
-                //await Navigation.PushAsync(new vPrincipal(usuarioNuevo));
             }
             else
             {
@@ -172,7 +162,6 @@ public partial class vLogReg : ContentPage
     {
         try
         {
-            // Paso 1: pedir correo
             string correo = await DisplayPromptAsync("Recuperar acceso", "Ingresa tu correo registrado");
 
             if (string.IsNullOrWhiteSpace(correo))
@@ -180,7 +169,6 @@ public partial class vLogReg : ContentPage
 
             correo = correo.Trim().ToLower();
 
-            // Paso 2: buscar usuario por correo
             string buscaCorreo = $"?Correo=eq.{correo}";
             var respuesta = await servicioSupabase.ConsultarAsync(configSupabase.tblUsuario, buscaCorreo);
 
@@ -201,7 +189,6 @@ public partial class vLogReg : ContentPage
 
             var usuario = usuarios[0];
 
-            // Paso 3: preguntar respuesta secreta
             string respuestaUsuario = await DisplayPromptAsync("Verificación", usuario.Pregunta);
 
             if (string.IsNullOrWhiteSpace(respuestaUsuario))
@@ -215,7 +202,6 @@ public partial class vLogReg : ContentPage
                 return;
             }
 
-            // Paso 4: pedir nueva contraseña
             string nuevaPass = await DisplayPromptAsync("Nueva contraseña", "Ingresa tu nueva contraseña", maxLength: 30);
 
             if (string.IsNullOrWhiteSpace(nuevaPass))
@@ -223,7 +209,6 @@ public partial class vLogReg : ContentPage
 
             string hashNuevaPass = hashPass.HashSHA256(nuevaPass.Trim());
 
-            // aquí ya usamos el nombre correcto de columna y propiedad
             var datos = new { Pass = hashNuevaPass };
             var filtroUpdate = $"?Correo=eq.{usuario.Correo.Trim().ToLower()}";
 

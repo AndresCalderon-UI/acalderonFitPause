@@ -9,10 +9,10 @@ namespace acalderonFitPause.Models
     public class HistorialPausa
     {
         public int Id { get; set; }
-        public int UsuarioId { get; set; }         // FK a Usuario.Id
-        public int EjercicioId { get; set; }       // FK a Ejercicio.Id
+        public int UsuarioId { get; set; }
+        public int EjercicioId { get; set; }
         public DateTime FechaHora { get; set; }
-        public int DuracionReal { get; set; }      // en minutos
+        public int DuracionReal { get; set; }
         public string FraseMotivacional { get; set; }
     }
 }

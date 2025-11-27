@@ -11,8 +11,8 @@ namespace acalderonFitPause.Models
         public int PausasHoy { get; set; }
         public int RachaDias { get; set; }
 
-        public int MetaDiariaTotal { get; set; }       // objetivo del usuario
-        public int MetaDiariaCompletadas { get; set; } // cuántas pausas lleva hoy
+        public int MetaDiariaTotal { get; set; }
+        public int MetaDiariaCompletadas { get; set; }
 
         public HistorialPausa UltimaPausa { get; set; }
 

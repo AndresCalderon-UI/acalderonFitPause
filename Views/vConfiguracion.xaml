@@ -142,8 +142,9 @@
                             <VerticalStackLayout Spacing="8">
 
                                 <Label x:Name="lblIntervalo"
-                                       Text="Intervalo de recordatorio"
-                                       TextColor="#111827"/>
+                                       TextColor="#2563FF"
+                                       FontAttributes="Bold"
+                                       Text="Intervalo de recordatorio"/>
 
                                 <Picker x:Name="pkIntervalo"
                                         Title="Seleccione intervalo"
@@ -162,12 +163,12 @@
                                        Text="Recibiras un recordatorio cada 45 minutos de inactividad"/>
                             </VerticalStackLayout>
 
-                            <!-- SENSIBILIDAD DEL SENSOR -->
                             <VerticalStackLayout Spacing="8">
 
                                 <Label x:Name="lblSensibilidad"
-                                       Text="Sensibilidad del sensor"
-                                       TextColor="#111827"/>
+                                       TextColor="#2563FF"
+                                       FontAttributes="Bold"
+                                       Text="Sensibilidad del sensor"/>
 
                                 <Picker x:Name="pkSensibilidad"
                                         Title="Seleccione sensibilidad"
@@ -185,7 +186,6 @@
                                        Text="La sensibilidad media funciona bien para la mayoría de usuarios."/>
                             </VerticalStackLayout>
 
-                            <!-- META DIARIA -->
                             <VerticalStackLayout Spacing="8">
 
                                 <Label x:Name="lblMeta"
@@ -227,7 +227,6 @@
                         </VerticalStackLayout>
                     </Frame>
 
-                    <!-- BOTON GUARDAR -->
                     <Button x:Name="btnGuardar"
                             Text="Guardar configuracion"
                             BackgroundColor="#2563FF"
@@ -246,7 +245,6 @@
             </VerticalStackLayout>
         </ScrollView>
 
-        <!-- MENÚ INFERIOR -->
         <Border Grid.Row="1"
                 Background="White"
                 Stroke="#E5E7EB"

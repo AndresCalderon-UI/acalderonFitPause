@@ -6,19 +6,14 @@
 
     <Grid BackgroundColor="#F3F4F6">
 
-        <!-- DEFINICIONES DE FILAS -->
         <Grid.RowDefinitions>
-            <!-- Contenido principal ocupa el espacio disponible -->
             <RowDefinition Height="*" />
-            <!-- Menú inferior con altura fija -->
             <RowDefinition Height="80" />
         </Grid.RowDefinitions>
 
-        <!-- CONTENIDO PRINCIPAL -->
         <ScrollView Grid.Row="0">
             <VerticalStackLayout Spacing="0">
 
-                <!-- Header -->
                 <Grid BackgroundColor="#2563FF" Padding="20">
                     <HorizontalStackLayout Spacing="15">
                         <ImageButton x:Name="btnAtras"
@@ -34,10 +29,8 @@
                     </HorizontalStackLayout>
                 </Grid>
 
-                <!-- Content -->
                 <VerticalStackLayout Padding="20" Spacing="20">
 
-                    <!-- Status Card -->
                     <Border Stroke="#BFDBFE"
                             StrokeThickness="1"
                             Background="White"
@@ -46,7 +39,6 @@
 
                         <VerticalStackLayout Spacing="20" HorizontalOptions="Center">
 
-                            <!-- Icono -->
                             <Border Stroke="#EBF5FF"
                                     StrokeThickness="1"
                                     Background="#dfeaed"
@@ -59,7 +51,6 @@
                                        Aspect="AspectFit"/>
                             </Border>
 
-                            <!-- Tiempo sin movimiento -->
                             <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
                                 <Label Text="Tiempo sin movimiento" 
                                        TextColor="#6B7280"
@@ -79,12 +70,10 @@
                                        HorizontalTextAlignment="Center"/>
                             </VerticalStackLayout>
 
-                            <!-- Barra de progreso -->
                             <ProgressBar x:Name="pbProgreso"
                                          Progress="0"
                                          HeightRequest="10"/>
 
-                            <!-- Mensaje de estado -->
                             <Label x:Name="lblMensajeEstado"
                                    Text="Monitor en funcionamiento"
                                    TextColor="#10B981"
@@ -93,7 +82,6 @@
                         </VerticalStackLayout>
                     </Border>
 
-                    <!-- Botón Pausar/Iniciar monitor -->
                     <Button x:Name="btnPausarIniciarMonitor"
                             Text="Pausar Monitor"
                             BackgroundColor="#F59E0B"
@@ -102,7 +90,6 @@
                             HeightRequest="50"
                             Clicked="btnPausarIniciarMonitor_Clicked"/>
 
-                    <!-- Tarjeta estado del sensor -->
                     <Border Stroke="#E5E7EB"
                             StrokeThickness="1"
                             Background="White"
@@ -115,7 +102,6 @@
                                    FontSize="16"/>
 
                             <Grid RowSpacing="8">
-                                <!-- DEFINICIONES EXPLÍCITAS DE GRID -->
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="30" />
                                     <RowDefinition Height="30" />
@@ -160,7 +146,6 @@
                         </VerticalStackLayout>
                     </Border>
 
-                    <!-- Botón para iniciar pausa activa -->
                     <Button x:Name="btnIniciarPausaActiva"
                             Text="Iniciar Pausa Activa Ahora"
                             BackgroundColor="#A855F7"
@@ -170,7 +155,6 @@
                             IsVisible="False"
                             Clicked="btnIniciarPausaActiva_Clicked"/>
 
-                    <!-- Consejo -->
                     <Border Background="#EBF5FF"
                             Stroke="#BFDBFE"
                             StrokeThickness="1"
